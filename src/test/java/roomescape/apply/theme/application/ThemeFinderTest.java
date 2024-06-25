@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import roomescape.apply.theme.domain.repository.ThemeJDBCRepository;
+import roomescape.apply.theme.domain.InMemoryThemeRepository;
 import roomescape.apply.theme.domain.repository.ThemeRepository;
 import roomescape.apply.theme.ui.dto.ThemeResponse;
 import roomescape.support.BaseTestService;
@@ -23,7 +23,7 @@ class ThemeFinderTest extends BaseTestService {
     @BeforeEach
     void setUp() {
         transactionStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        themeRepository = new ThemeJDBCRepository(template);
+        themeRepository = new InMemoryThemeRepository();
         themeFinder = new ThemeFinder(themeRepository);
     }
 

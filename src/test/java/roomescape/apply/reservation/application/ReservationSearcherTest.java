@@ -14,7 +14,7 @@ import roomescape.apply.reservationtime.domain.ReservationTime;
 import roomescape.apply.reservationtime.domain.repository.ReservationTimeJDBCRepository;
 import roomescape.apply.reservationtime.domain.repository.ReservationTimeRepository;
 import roomescape.apply.theme.domain.Theme;
-import roomescape.apply.theme.domain.repository.ThemeJDBCRepository;
+import roomescape.apply.theme.domain.InMemoryThemeRepository;
 import roomescape.apply.theme.domain.repository.ThemeRepository;
 import roomescape.support.BaseTestService;
 
@@ -38,7 +38,7 @@ class ReservationSearcherTest extends BaseTestService {
     @BeforeEach
     void setUp() {
         transactionStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        themeRepository = new ThemeJDBCRepository(template);
+        themeRepository = new InMemoryThemeRepository();
         memberRepository = new MemberJDBCRepository(template);
         reservationRepository = new ReservationJDBCRepository(template);
         reservationTimeRepository = new ReservationTimeJDBCRepository(template);

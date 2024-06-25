@@ -17,7 +17,7 @@ import roomescape.apply.reservationtime.domain.repository.ReservationTimeJDBCRep
 import roomescape.apply.reservationtime.domain.repository.ReservationTimeRepository;
 import roomescape.apply.theme.application.exception.ThemeReferencedException;
 import roomescape.apply.theme.domain.Theme;
-import roomescape.apply.theme.domain.repository.ThemeJDBCRepository;
+import roomescape.apply.theme.domain.InMemoryThemeRepository;
 import roomescape.apply.theme.domain.repository.ThemeRepository;
 import roomescape.support.BaseTestService;
 
@@ -37,7 +37,7 @@ class ThemeDeleterTest extends BaseTestService {
     @BeforeEach
     void setUp() {
         transactionStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        themeRepository = new ThemeJDBCRepository(template);
+        themeRepository = new InMemoryThemeRepository();
         reservationTimeRepository = new ReservationTimeJDBCRepository(template);
         reservationRepository = new ReservationJDBCRepository(template);
         memberRepository = new MemberJDBCRepository(template);
