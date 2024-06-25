@@ -1,10 +1,11 @@
 package roomescape.apply.theme.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.apply.reservation.application.ReservationFinder;
 import roomescape.apply.theme.application.exception.NotFoundThemeException;
 import roomescape.apply.theme.application.exception.ThemeReferencedException;
-import roomescape.apply.theme.domain.repository.ThemeRepository;
+import roomescape.apply.theme.domain.ThemeRepository;
 
 @Service
 public class ThemeDeleter {
@@ -17,6 +18,7 @@ public class ThemeDeleter {
         this.reservationFinder = reservationFinder;
     }
 
+    @Transactional
     public void deleteThemeBy(long id) {
         final long existId = themeRepository.findIdById(id).orElseThrow(NotFoundThemeException::new);
         boolean isReferenced = reservationFinder.findIdByThemeId(id).isPresent();

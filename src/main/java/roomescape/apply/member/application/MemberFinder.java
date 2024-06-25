@@ -1,6 +1,7 @@
 package roomescape.apply.member.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.apply.auth.application.PasswordHasher;
 import roomescape.apply.auth.application.exception.IllegalTokenException;
 import roomescape.apply.auth.ui.dto.LoginMember;
@@ -9,13 +10,14 @@ import roomescape.apply.auth.ui.dto.LoginResponse;
 import roomescape.apply.member.domain.Member;
 import roomescape.apply.member.domain.MemberRoleName;
 import roomescape.apply.member.domain.MemberRoleNames;
-import roomescape.apply.member.domain.repository.MemberRepository;
+import roomescape.apply.member.domain.MemberRepository;
 import roomescape.apply.member.ui.dto.MemberResponse;
 
 import java.util.List;
 import java.util.Set;
 
 @Service
+@Transactional(readOnly = true)
 public class MemberFinder {
 
     private static final String LOGIN_FAIL_MESSAGE = "아이디 혹은 비밀번호가 잘못되었습니다.";

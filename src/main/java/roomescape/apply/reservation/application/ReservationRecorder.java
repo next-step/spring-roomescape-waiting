@@ -1,13 +1,14 @@
 package roomescape.apply.reservation.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.apply.auth.ui.dto.LoginMember;
 import roomescape.apply.member.application.MemberFinder;
 import roomescape.apply.member.domain.Member;
 import roomescape.apply.member.ui.dto.MemberResponse;
 import roomescape.apply.reservation.application.excpetion.DuplicateReservationException;
 import roomescape.apply.reservation.domain.Reservation;
-import roomescape.apply.reservation.domain.repository.ReservationRepository;
+import roomescape.apply.reservation.domain.ReservationRepository;
 import roomescape.apply.reservation.ui.dto.ReservationAdminRequest;
 import roomescape.apply.reservation.ui.dto.ReservationAdminResponse;
 import roomescape.apply.reservation.ui.dto.ReservationRequest;
@@ -36,6 +37,7 @@ public class ReservationRecorder {
         this.memberFinder = memberFinder;
     }
 
+    @Transactional
     public ReservationResponse recordReservationBy(ReservationRequest request, LoginMember loginMember) {
         validateNotDuplicateReservation(request.timeId(), request.themeId());
 
@@ -47,6 +49,7 @@ public class ReservationRecorder {
         return ReservationResponse.from(saved, theme, time);
     }
 
+    @Transactional
     public ReservationAdminResponse recordReservationBy(ReservationAdminRequest request) {
         validateNotDuplicateReservation(request.timeId(), request.themeId());
 

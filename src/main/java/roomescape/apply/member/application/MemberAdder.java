@@ -1,10 +1,11 @@
 package roomescape.apply.member.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.apply.auth.application.PasswordHasher;
 import roomescape.apply.member.domain.Member;
 import roomescape.apply.member.domain.MemberRole;
-import roomescape.apply.member.domain.repository.MemberRepository;
+import roomescape.apply.member.domain.MemberRepository;
 import roomescape.apply.member.ui.dto.MemberRequest;
 import roomescape.apply.member.ui.dto.MemberResponse;
 
@@ -26,6 +27,7 @@ public class MemberAdder {
         this.memberRoleSaver = memberRoleSaver;
     }
 
+    @Transactional
     public MemberResponse addNewMember(MemberRequest request) {
         duplicateChecker.checkIsDuplicateEmail(request);
 

@@ -1,14 +1,16 @@
 package roomescape.apply.theme.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.apply.theme.application.exception.NotFoundThemeException;
 import roomescape.apply.theme.domain.Theme;
-import roomescape.apply.theme.domain.repository.ThemeRepository;
+import roomescape.apply.theme.domain.ThemeRepository;
 import roomescape.apply.theme.ui.dto.ThemeResponse;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class ThemeFinder {
 
     private final ThemeRepository themeRepository;

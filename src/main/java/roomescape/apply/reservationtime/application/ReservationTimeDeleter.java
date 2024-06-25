@@ -1,10 +1,11 @@
 package roomescape.apply.reservationtime.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.apply.reservation.application.ReservationFinder;
 import roomescape.apply.reservationtime.application.exception.NotFoundReservationTimeException;
 import roomescape.apply.reservationtime.application.exception.ReservationTimeReferencedException;
-import roomescape.apply.reservationtime.domain.repository.ReservationTimeRepository;
+import roomescape.apply.reservationtime.domain.ReservationTimeRepository;
 
 @Service
 public class ReservationTimeDeleter {
@@ -17,6 +18,7 @@ public class ReservationTimeDeleter {
         this.reservationFinder = reservationFinder;
     }
 
+    @Transactional
     public void deleteReservationTimeBy(long id) {
         final long existId = reservationTimeRepository.findIdById(id).orElseThrow(NotFoundReservationTimeException::new);
         boolean isReferenced = reservationFinder.findIdByTimeId(id).isPresent();
