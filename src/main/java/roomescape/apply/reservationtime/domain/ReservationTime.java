@@ -1,13 +1,19 @@
 package roomescape.apply.reservationtime.domain;
 
+import jakarta.persistence.*;
+
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+@Entity
 public class ReservationTime {
 
+    @Id @Column(name = "reservation_time_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String startAt;
 
+    @Transient
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
     protected ReservationTime() {

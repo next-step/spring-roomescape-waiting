@@ -1,6 +1,7 @@
-package roomescape.apply.reservationtime.domain.repository;
+package roomescape.apply.reservationtime.domain;
 
-import roomescape.apply.reservationtime.domain.ReservationTime;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,9 +14,8 @@ public interface ReservationTimeRepository {
 
     void deleteById(Long id);
 
-    Optional<Long> findIdById(long id);
+    @Query("SELECT rt.id FROM ReservationTime rt WHERE rt.id = :id")
+    Optional<Long> findIdById(@Param("id") long id);
 
     Optional<ReservationTime> findOneById(long timeId);
-
-    List<Long> findReservedTimeIds(String date, long themeId);
 }
