@@ -19,7 +19,7 @@ public record ReservationAdminResponse(
                                                 ReservationTime reservationTime,
                                                 MemberResponse memberResponse
     ) {
-        return new ReservationAdminResponse(reservation.getId(), memberResponse, reservation.getDate(),
+        return new ReservationAdminResponse(reservation.getId(), memberResponse, reservation.getReservationDate().value(),
                 ThemeResponse.from(theme), ReservationTimeResponse.from(reservationTime));
     }
 }
