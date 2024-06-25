@@ -33,7 +33,7 @@ public class ReservationJDBCRepository implements ReservationRepository {
                     r.member_id as member_id,
                     rt.id as time_id,
                     rt.start_at as time_start_at,
-                    th.id as theme_id,
+                    th.theme_id as theme_id,
                     th.name as theme_name,
                     th.description as theme_description,
                     th.thumbnail as theme_thumbnail
@@ -41,7 +41,7 @@ public class ReservationJDBCRepository implements ReservationRepository {
                 inner join reservation_time as rt
                     on r.time_id = rt.id
                 inner join theme as th
-                    on r.theme_id = th.id
+                    on r.theme_id = th.theme_id
             """;
 
     private static final String FIND_ID_BY_ID_SQL = """
