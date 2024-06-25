@@ -11,7 +11,15 @@ public interface ReservationRepository {
 
     Reservation save(Reservation reservation);
 
-    List<Reservation> findAll();
+    @Query("""
+                SELECT
+                    DISTINCT r
+                FROM
+                    Reservation r
+                    JOIN FETCH r.theme
+                    JOIN FETCH r.time
+            """)
+    List<Reservation> findAllFetchJoinThemeAndTime();
 
     @Query("SELECT r.id FROM Reservation r WHERE r.id = :id")
     Optional<Long> findIdById(@Param("id") long id);
@@ -34,17 +42,6 @@ public interface ReservationRepository {
 
     @Query("SELECT r.id FROM Reservation r WHERE r.theme.id = :themeId")
     Optional<Long> findIdByThemeId(@Param("themeId") long themeId);
-
-    @Query("""
-                SELECT
-                    r.time.id
-                FROM
-                    Reservation r
-               WHERE
-                   r.reservationDate.date = :date
-                   AND r.theme.id = :themeId
-            """)
-    List<Long> findReservedTimeIdsInDateAndThemeId(@Param("date") String date, @Param("themeId") long themeId);
 
     List<Reservation> searchReservationsBySearchParams(ReservationSearchParams searchParams);
 }

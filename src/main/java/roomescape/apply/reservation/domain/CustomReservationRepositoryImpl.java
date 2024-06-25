@@ -21,7 +21,6 @@ public class CustomReservationRepositoryImpl implements CustomReservationReposit
         this.queryFactory = queryFactory;
     }
 
-
     @Override
     public List<Reservation> searchReservationsBySearchParams(ReservationSearchParams searchParams) {
         QReservation reservation = QReservation.reservation;
@@ -42,8 +41,8 @@ public class CustomReservationRepositoryImpl implements CustomReservationReposit
             builder.and(reservation.reservationDate.date.loe(searchParams.dateTo()));
         }
         return queryFactory.selectFrom(reservation)
-                           .join(reservation.theme, theme)
-                           .join(reservation.time, reservationTime)
+                           .join(reservation.theme, theme).fetchJoin()
+                           .join(reservation.time, reservationTime).fetchJoin()
                            .where(builder)
                            .fetch();
     }

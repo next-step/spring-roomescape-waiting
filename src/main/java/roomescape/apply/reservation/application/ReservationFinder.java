@@ -7,10 +7,8 @@ import roomescape.apply.reservation.domain.ReservationRepository;
 import roomescape.apply.reservation.ui.dto.ReservationAdminResponse;
 import roomescape.apply.reservation.ui.dto.ReservationResponse;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
@@ -23,14 +21,14 @@ public class ReservationFinder {
     }
 
     public List<ReservationResponse> findAll() {
-        return reservationRepository.findAll()
+        return reservationRepository.findAllFetchJoinThemeAndTime()
                 .stream()
                 .map(it -> ReservationResponse.from(it, it.getTheme(), it.getTime()))
                 .toList();
     }
 
     public List<ReservationAdminResponse> findAllForAdmin() {
-        return reservationRepository.findAll()
+        return reservationRepository.findAllFetchJoinThemeAndTime()
                 .stream()
                 .map(it -> ReservationAdminResponse.from(it,
                         it.getTheme(),
@@ -53,7 +51,4 @@ public class ReservationFinder {
         return reservationRepository.findIdByThemeId(themeId);
     }
 
-    public Set<Long> findAlreadyReservedTimeIdsBy(String date, long themeId) {
-        return new HashSet<>(reservationRepository.findReservedTimeIdsInDateAndThemeId(date, themeId));
-    }
 }
