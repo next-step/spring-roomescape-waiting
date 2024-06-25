@@ -70,7 +70,7 @@ public class InMemoryReservationRepository implements ReservationRepository {
                 .filter(reservation -> searchParams.themeId() == null
                         || searchParams.themeId().equals(reservation.getTheme().getId()))
                 .filter(reservation -> searchParams.memberId() == null
-                        || searchParams.memberId().equals(reservation.getMemberId().longValue()))
+                        || searchParams.memberId().equals(reservation.getMemberId()))
                 .filter(reservation -> StringUtils.isEmpty(searchParams.dateFrom())
                         || reservation.getReservationDate().isNotBefore(searchParams.dateFrom()))
                 .filter(reservation -> StringUtils.isEmpty(searchParams.dateTo())

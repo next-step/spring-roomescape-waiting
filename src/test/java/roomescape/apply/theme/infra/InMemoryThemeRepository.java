@@ -1,6 +1,7 @@
-package roomescape.apply.theme.domain;
+package roomescape.apply.theme.infra;
 
-import roomescape.apply.theme.domain.repository.ThemeRepository;
+import roomescape.apply.theme.domain.Theme;
+import roomescape.apply.theme.domain.ThemeRepository;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;

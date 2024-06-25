@@ -1,33 +1,24 @@
 package roomescape.apply.theme.application;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import roomescape.apply.theme.domain.InMemoryThemeRepository;
-import roomescape.apply.theme.domain.repository.ThemeRepository;
+import roomescape.apply.theme.domain.ThemeRepository;
+import roomescape.apply.theme.infra.InMemoryThemeRepository;
 import roomescape.apply.theme.ui.dto.ThemeRequest;
 import roomescape.apply.theme.ui.dto.ThemeResponse;
-import roomescape.support.BaseTestService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static roomescape.support.ReservationsFixture.themeRequest;
 
-class ThemeSaverTest extends BaseTestService {
+class ThemeSaverTest {
     private ThemeSaver themeSaver;
     private ThemeRepository themeRepository;
 
     @BeforeEach
     void setUp() {
-        transactionStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
         themeRepository = new InMemoryThemeRepository();
         themeSaver = new ThemeSaver(themeRepository);
-    }
-
-    @AfterEach
-    void clear() {
-        transactionManager.rollback(transactionStatus);
     }
 
     @Test
