@@ -1,0 +1,74 @@
+package roomescape.apply.reservation.application;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+import roomescape.apply.member.domain.Member;
+import roomescape.apply.member.domain.repository.MemberJDBCRepository;
+import roomescape.apply.member.domain.repository.MemberRepository;
+import roomescape.apply.reservation.domain.Reservation;
+import roomescape.apply.reservation.domain.repository.ReservationJDBCRepository;
+import roomescape.apply.reservation.domain.repository.ReservationRepository;
+import roomescape.apply.reservation.ui.dto.ReservationResponse;
+import roomescape.apply.reservationtime.domain.ReservationTime;
+import roomescape.apply.reservationtime.domain.repository.ReservationTimeJDBCRepository;
+import roomescape.apply.reservationtime.domain.repository.ReservationTimeRepository;
+import roomescape.apply.theme.domain.Theme;
+import roomescape.apply.theme.domain.repository.ThemeJDBCRepository;
+import roomescape.apply.theme.domain.repository.ThemeRepository;
+import roomescape.support.BaseTestService;
+
+import java.util.List;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static roomescape.support.MemberFixture.member;
+import static roomescape.support.ReservationsFixture.*;
+
+class ReservationFinderTest extends BaseTestService {
+
+    private ReservationFinder reservationFinder;
+    private ReservationRepository reservationRepository;
+    private ReservationTimeRepository reservationTimeRepository;
+    private ThemeRepository themeRepository;
+    private MemberRepository memberRepository;
+
+    @BeforeEach
+    void setUp() {
+        transactionStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        reservationRepository = new ReservationJDBCRepository(template);
+        reservationTimeRepository = new ReservationTimeJDBCRepository(template);
+        themeRepository = new ThemeJDBCRepository(template);
+        memberRepository = new MemberJDBCRepository(template);
+
+        reservationFinder = new ReservationFinder(reservationRepository);
+    }
+
+    @AfterEach
+    void clear() {
+        transactionManager.rollback(transactionStatus);
+    }
+
+    @Test
+    @DisplayName("기존 예약들을 전부 가져올 수 있다.")
+    void findAllTest() {
+        // given
+        Member saveMember = memberRepository.save(member());
+        List<Reservation> reservations = Stream.of("10:00", "11:00", "12:00", "13:00", "14:00").map(time -> {
+            ReservationTime saveReservationTime = reservationTimeRepository.save(reservationTime(time));
+            Theme saveTheme = themeRepository.save(theme());
+            return reservation(saveReservationTime, saveTheme, "2099-01-01", saveMember.getId());
+        }).toList();
+
+        for (Reservation reservation : reservations) {
+            reservationRepository.save(reservation);
+        }
+        // when
+        List<ReservationResponse> responses = reservationFinder.findAll();
+        // then
+        assertThat(responses).isNotEmpty().hasSize(reservations.size());
+    }
+
+}
