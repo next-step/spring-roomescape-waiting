@@ -1,17 +1,27 @@
 package roomescape.apply.reservation.domain;
 
-import roomescape.apply.member.domain.MemberId;
+import jakarta.persistence.*;
 import roomescape.apply.reservationtime.domain.ReservationTime;
 import roomescape.apply.theme.domain.Theme;
 
+@Entity
 public class Reservation {
 
+    @Id @Column(name = "reservation_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    private String date;
+    @Embedded
+    private ReservationDate reservationDate;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "time_id",
+                foreignKey = @ForeignKey(name = "fk_reservation_to_reservation_time"))
     private ReservationTime time;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "theme_id",
+                foreignKey = @ForeignKey(name = "fk_reservation_to_theme"))
     private Theme theme;
-    private MemberId memberId;
+    private Long memberId;
 
     protected Reservation() {
 
@@ -20,19 +30,19 @@ public class Reservation {
     public Reservation(Long id, String name, String date, ReservationTime time, Theme theme, Long memberId) {
         this.id = id;
         this.name = name;
-        this.date = date;
+        this.reservationDate = new ReservationDate(date);
         this.time = time;
         this.theme = theme;
-        this.memberId = MemberId.of(memberId);
+        this.memberId = memberId;
     }
 
     public static Reservation of(String name, String date, ReservationTime time, Theme theme, Long memberId) {
         Reservation reservation = new Reservation();
         reservation.name = name;
-        reservation.date = date;
+        reservation.reservationDate = new ReservationDate(date);
         reservation.time = time;
         reservation.theme = theme;
-        reservation.memberId = MemberId.of(memberId);
+        reservation.memberId = memberId;
         return reservation;
     }
 
@@ -48,8 +58,8 @@ public class Reservation {
         return name;
     }
 
-    public String getDate() {
-        return date;
+    public ReservationDate getReservationDate() {
+        return reservationDate;
     }
 
     public ReservationTime getTime() {
