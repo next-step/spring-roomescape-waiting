@@ -1,40 +1,36 @@
 package roomescape.apply.reservation.application;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 import roomescape.apply.auth.ui.dto.LoginMember;
 import roomescape.apply.member.application.MemberFinder;
 import roomescape.apply.member.application.MemberRoleFinder;
 import roomescape.apply.member.application.mock.MockPasswordHasher;
 import roomescape.apply.member.domain.Member;
-import roomescape.apply.member.domain.repository.MemberJDBCRepository;
-import roomescape.apply.member.domain.repository.MemberRepository;
-import roomescape.apply.member.domain.repository.MemberRoleJDBCRepository;
+import roomescape.apply.member.domain.MemberRepository;
+import roomescape.apply.member.infra.InMemoryMemberRepository;
+import roomescape.apply.member.infra.InMemoryMemberRoleRepository;
 import roomescape.apply.reservation.application.excpetion.DuplicateReservationException;
-import roomescape.apply.reservation.domain.repository.ReservationJDBCRepository;
+import roomescape.apply.reservation.infra.InMemoryReservationRepository;
 import roomescape.apply.reservation.ui.dto.ReservationRequest;
 import roomescape.apply.reservation.ui.dto.ReservationResponse;
 import roomescape.apply.reservationtime.application.ReservationTimeFinder;
 import roomescape.apply.reservationtime.domain.ReservationTime;
-import roomescape.apply.reservationtime.domain.repository.ReservationTimeJDBCRepository;
-import roomescape.apply.reservationtime.domain.repository.ReservationTimeRepository;
+import roomescape.apply.reservationtime.domain.ReservationTimeRepository;
+import roomescape.apply.reservationtime.infra.InMemoryReservationTimeRepository;
 import roomescape.apply.theme.application.ThemeFinder;
 import roomescape.apply.theme.domain.Theme;
-import roomescape.apply.theme.domain.InMemoryThemeRepository;
-import roomescape.apply.theme.domain.repository.ThemeRepository;
-import roomescape.support.BaseTestService;
+import roomescape.apply.theme.domain.ThemeRepository;
+import roomescape.apply.theme.infra.InMemoryThemeRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static roomescape.support.MemberFixture.loginMember;
 import static roomescape.support.MemberFixture.member;
 import static roomescape.support.ReservationsFixture.*;
 
-class ReservationRecorderTest extends BaseTestService {
+class ReservationRecorderTest {
 
     private ReservationRecorder reservationRecorder;
     private ReservationTimeRepository reservationTimeRepository;
@@ -43,28 +39,22 @@ class ReservationRecorderTest extends BaseTestService {
 
     @BeforeEach
     void setUp() {
-        transactionStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        reservationTimeRepository = new ReservationTimeJDBCRepository(template);
-        var reservationRepository = new ReservationJDBCRepository(template);
+        reservationTimeRepository = new InMemoryReservationTimeRepository();
+        var reservationRepository = new InMemoryReservationRepository();
         themeRepository = new InMemoryThemeRepository();
-        memberRepository = new MemberJDBCRepository(template);
-        var memberRoleRepository = new MemberRoleJDBCRepository(template);
+        memberRepository = new InMemoryMemberRepository();
+        var memberRoleRepository = new InMemoryMemberRoleRepository();
 
         var themeFinder = new ThemeFinder(themeRepository);
-        var reservationTimeFinder = new ReservationTimeFinder(reservationTimeRepository);
         var memberRoleFinder = new MemberRoleFinder(memberRoleRepository);
         var memberFinder = new MemberFinder(new MockPasswordHasher(), memberRepository, memberRoleFinder);
         var reservationFinder = new ReservationFinder(reservationRepository);
+        var reservationTimeFinder = new ReservationTimeFinder(reservationFinder, reservationTimeRepository);
         reservationRecorder = new ReservationRecorder(reservationRepository,
                 reservationTimeFinder,
                 themeFinder,
                 reservationFinder,
                 memberFinder);
-    }
-
-    @AfterEach
-    void clear() {
-        transactionManager.rollback(transactionStatus);
     }
 
     @Test
@@ -95,9 +85,10 @@ class ReservationRecorderTest extends BaseTestService {
         Theme theme = themeRepository.save(theme());
         ReservationRequest request = reservationRequest(time.getId(), theme.getId());
         Member save = memberRepository.save(member());
-        // when && then
+        // when
         LoginMember loginMember = loginMember(save);
-        assertDoesNotThrow(() -> reservationRecorder.recordReservationBy(request, loginMember));
+        reservationRecorder.recordReservationBy(request, loginMember);
+        // then
         assertThatThrownBy(() -> reservationRecorder.recordReservationBy(request, loginMember))
                 .isInstanceOf(DuplicateReservationException.class)
                 .hasMessage(DuplicateReservationException.DEFAULT_MESSAGE);
