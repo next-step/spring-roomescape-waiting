@@ -1,8 +1,15 @@
 package roomescape.apply.member.domain;
 
+import jakarta.persistence.*;
+
+@Entity
 public class MemberRole {
 
+    @Id @Column(name = "member_role_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(name = "name")
+    @Enumerated(EnumType.STRING)
     private MemberRoleName memberRoleName;
     private Long memberId;
 

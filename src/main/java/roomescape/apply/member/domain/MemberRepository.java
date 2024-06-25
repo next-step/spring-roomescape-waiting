@@ -1,6 +1,7 @@
-package roomescape.apply.member.domain.repository;
+package roomescape.apply.member.domain;
 
-import roomescape.apply.member.domain.Member;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +11,8 @@ public interface MemberRepository {
 
     List<Member> findAll();
 
-    Optional<Long> findIdByEmail(String email);
+    @Query("SELECT m.id FROM Member m WHERE m.email = :email")
+    Optional<Long> findIdByEmail(@Param("email") String email);
 
     Member save(Member member);
 

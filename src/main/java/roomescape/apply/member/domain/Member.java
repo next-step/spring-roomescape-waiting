@@ -1,7 +1,18 @@
 package roomescape.apply.member.domain;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+import static jakarta.persistence.GenerationType.AUTO;
+
+
+@Entity
 public class Member {
-    private MemberId id;
+    @Id @Column(name = "member_id")
+    @GeneratedValue(strategy = AUTO)
+    private Long id;
     private String name;
     private String email;
     private String password;
@@ -11,7 +22,7 @@ public class Member {
     }
 
     public Member(Long id, String name, String email, String password) {
-        this.id = MemberId.of(id);
+        this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
@@ -26,11 +37,14 @@ public class Member {
     }
 
     public void changeId(long id) {
-        this.id = MemberId.of(id);
+        this.id = id;
     }
 
     public Long getId() {
-        return id.longValue();
+        if (id == null) {
+            return null;
+        }
+        return id;
     }
 
     public String getName() {
