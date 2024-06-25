@@ -1,22 +1,20 @@
 package roomescape.apply.reservationtime.application;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 import roomescape.apply.member.domain.Member;
-import roomescape.apply.member.domain.repository.MemberJDBCRepository;
-import roomescape.apply.member.domain.repository.MemberRepository;
-import roomescape.apply.reservation.domain.repository.ReservationJDBCRepository;
-import roomescape.apply.reservation.domain.repository.ReservationRepository;
-import roomescape.apply.reservationtime.domain.repository.ReservationTimeJDBCRepository;
-import roomescape.apply.reservationtime.domain.repository.ReservationTimeRepository;
+import roomescape.apply.member.infra.InMemoryMemberRepository;
+import roomescape.apply.member.domain.MemberRepository;
+import roomescape.apply.reservation.application.ReservationFinder;
+import roomescape.apply.reservation.infra.InMemoryReservationRepository;
+import roomescape.apply.reservation.domain.ReservationRepository;
+import roomescape.apply.reservationtime.infra.InMemoryReservationTimeRepository;
+import roomescape.apply.reservationtime.domain.ReservationTimeRepository;
 import roomescape.apply.reservationtime.ui.dto.ReservationTimeResponse;
 import roomescape.apply.theme.domain.Theme;
-import roomescape.apply.theme.domain.InMemoryThemeRepository;
-import roomescape.apply.theme.domain.repository.ThemeRepository;
-import roomescape.support.BaseTestService;
+import roomescape.apply.theme.infra.InMemoryThemeRepository;
+import roomescape.apply.theme.domain.ThemeRepository;
 
 import java.util.List;
 
@@ -24,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static roomescape.support.MemberFixture.member;
 import static roomescape.support.ReservationsFixture.*;
 
-class ReservationTimeFinderTest extends BaseTestService {
+class ReservationTimeFinderTest {
 
     private ReservationTimeFinder reservationTimeFinder;
     private ThemeRepository themeRepository;
@@ -34,17 +32,11 @@ class ReservationTimeFinderTest extends BaseTestService {
 
     @BeforeEach
     void setUp() {
-        transactionStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        reservationTimeRepository = new ReservationTimeJDBCRepository(template);
-        reservationRepository = new ReservationJDBCRepository(template);
+        reservationTimeRepository = new InMemoryReservationTimeRepository();
+        reservationRepository = new InMemoryReservationRepository();
         themeRepository = new InMemoryThemeRepository();
-        memberRepository = new MemberJDBCRepository(template);
-        reservationTimeFinder = new ReservationTimeFinder(reservationTimeRepository);
-    }
-
-    @AfterEach
-    void clear() {
-        transactionManager.rollback(transactionStatus);
+        memberRepository = new InMemoryMemberRepository();
+        reservationTimeFinder = new ReservationTimeFinder(new ReservationFinder(reservationRepository), reservationTimeRepository);
     }
 
     @Test
