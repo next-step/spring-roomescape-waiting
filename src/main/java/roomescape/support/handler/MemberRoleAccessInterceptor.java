@@ -62,7 +62,7 @@ public class MemberRoleAccessInterceptor implements HandlerInterceptor {
 
     private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String originalUrl = URLEncoder.encode(request.getRequestURL().toString(), StandardCharsets.UTF_8.toString());
+            String originalUrl = URLEncoder.encode(request.getRequestURL().toString(), StandardCharsets.UTF_8);
             response.sendRedirect(LOGIN_REDIRECT + originalUrl);
         } catch (IOException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

@@ -88,7 +88,7 @@ public class MemberRolePathExtractor {
         }
 
         return Arrays.stream(values)
-                .map(value -> value.replaceAll("\\{[^}]+\\}", "**"))
+                .map(value -> value.replaceAll("\\{[^}]+}", "**"))
                 .map(value -> value.startsWith("/") ? value : "/" + value)
                 .toList();
     }

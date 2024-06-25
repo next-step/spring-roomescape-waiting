@@ -23,6 +23,15 @@ public record MemberRoleNames(Set<MemberRoleName> roleNames) {
         return Arrays.stream(roleNameValues).map(MemberRoleName::findRoleByValue).collect(toSet());
     }
 
+
+    /**
+     * Gets the joined role names from the set of role names.
+     * This method seems currently unused but is used by JwtTokenManager(getRoleNameFromToken) to join role names using a delimiter.
+     *
+     * @see roomescape.apply.auth.application.JwtTokenManager
+     * @return the joined role names as a single string.
+     */
+    @SuppressWarnings("unused")
     public String getJoinedNames() {
         Set<String> nameValues = this.roleNames.stream().map(MemberRoleName::getValue).collect(toSet());
         return String.join(DELIMITER, nameValues);
