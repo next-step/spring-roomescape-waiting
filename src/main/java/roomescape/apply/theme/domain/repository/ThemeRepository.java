@@ -1,5 +1,7 @@
 package roomescape.apply.theme.domain.repository;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import roomescape.apply.theme.domain.Theme;
 
 import java.util.List;
@@ -13,7 +15,8 @@ public interface ThemeRepository {
 
     void deleteById(Long id);
 
-    Optional<Long> findIdById(long id);
+    @Query("SELECT t.id FROM Theme t WHERE t.id = :id")
+    Optional<Long> findIdById(@Param("id") long id);
 
     Optional<Theme> findOneById(long themeId);
 }
