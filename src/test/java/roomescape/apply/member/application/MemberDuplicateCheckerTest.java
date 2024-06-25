@@ -1,41 +1,32 @@
 package roomescape.apply.member.application;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 import roomescape.apply.member.application.mock.MockPasswordHasher;
 import roomescape.apply.member.domain.Member;
-import roomescape.apply.member.domain.repository.MemberJDBCRepository;
-import roomescape.apply.member.domain.repository.MemberRepository;
-import roomescape.apply.member.domain.repository.MemberRoleJDBCRepository;
-import roomescape.support.BaseTestService;
+import roomescape.apply.member.domain.MemberRepository;
+import roomescape.apply.member.infra.InMemoryMemberRepository;
+import roomescape.apply.member.infra.InMemoryMemberRoleRepository;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static roomescape.support.MemberFixture.member;
 import static roomescape.support.MemberFixture.memberRequest;
 
-class MemberDuplicateCheckerTest extends BaseTestService {
+class MemberDuplicateCheckerTest {
 
     private MemberDuplicateChecker memberDuplicateChecker;
     private MemberRepository memberRepository;
 
     @BeforeEach
     void setUp() {
-        transactionStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        memberRepository = new MemberJDBCRepository(template);
-        var memberRoleRepository = new MemberRoleJDBCRepository(template);
+        memberRepository = new InMemoryMemberRepository();
+        var memberRoleRepository = new InMemoryMemberRoleRepository();
 
         var passwordHasher = new MockPasswordHasher();
         var memberRoleFinder = new MemberRoleFinder(memberRoleRepository);
         var memberFinder = new MemberFinder(passwordHasher, memberRepository, memberRoleFinder);
         memberDuplicateChecker = new MemberDuplicateChecker(memberFinder);
-    }
-
-    @AfterEach
-    void clear() {
-        transactionManager.rollback(transactionStatus);
     }
 
     @Test

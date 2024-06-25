@@ -1,18 +1,15 @@
 package roomescape.apply.member.application;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 import roomescape.apply.auth.ui.dto.LoginRequest;
 import roomescape.apply.auth.ui.dto.LoginResponse;
 import roomescape.apply.member.application.mock.MockPasswordHasher;
-import roomescape.apply.member.domain.repository.MemberJDBCRepository;
-import roomescape.apply.member.domain.repository.MemberRepository;
-import roomescape.apply.member.domain.repository.MemberRoleJDBCRepository;
+import roomescape.apply.member.infra.InMemoryMemberRepository;
+import roomescape.apply.member.domain.MemberRepository;
+import roomescape.apply.member.infra.InMemoryMemberRoleRepository;
 import roomescape.apply.member.ui.dto.MemberResponse;
-import roomescape.support.BaseTestService;
 
 import java.util.List;
 
@@ -20,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static roomescape.support.MemberFixture.member;
 import static roomescape.support.MemberFixture.memberRequest;
 
-class MemberFinderTest extends BaseTestService {
+class MemberFinderTest {
 
 
     private MemberFinder memberFinder;
@@ -28,18 +25,12 @@ class MemberFinderTest extends BaseTestService {
 
     @BeforeEach
     void setUp() {
-        transactionStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        memberRepository = new MemberJDBCRepository(template);
-        var memberRoleRepository = new MemberRoleJDBCRepository(template);
+        memberRepository = new InMemoryMemberRepository();
+        var memberRoleRepository = new InMemoryMemberRoleRepository();
 
         var passwordHasher = new MockPasswordHasher();
         var memberRoleFinder = new MemberRoleFinder(memberRoleRepository);
         memberFinder = new MemberFinder(passwordHasher, memberRepository, memberRoleFinder);
-    }
-
-    @AfterEach
-    void clear() {
-        transactionManager.rollback(transactionStatus);
     }
 
     @Test
@@ -52,7 +43,7 @@ class MemberFinderTest extends BaseTestService {
         // when
         List<MemberResponse> allMembers = memberFinder.findAll();
         // then
-        assertThat(allMembers).isNotNull().hasSize(4);
+        assertThat(allMembers).isNotNull().hasSize(3);
     }
 
     @Test

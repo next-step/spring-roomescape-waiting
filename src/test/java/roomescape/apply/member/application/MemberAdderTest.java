@@ -1,24 +1,24 @@
 package roomescape.apply.member.application;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 import roomescape.apply.member.application.mock.MockPasswordHasher;
-import roomescape.apply.member.domain.repository.MemberJDBCRepository;
-import roomescape.apply.member.domain.repository.MemberRepository;
-import roomescape.apply.member.domain.repository.MemberRoleJDBCRepository;
-import roomescape.apply.member.domain.repository.MemberRoleRepository;
+import roomescape.apply.member.domain.MemberRepository;
+import roomescape.apply.member.domain.MemberRoleName;
+import roomescape.apply.member.domain.MemberRoleRepository;
+import roomescape.apply.member.infra.InMemoryMemberRepository;
+import roomescape.apply.member.infra.InMemoryMemberRoleRepository;
 import roomescape.apply.member.ui.dto.MemberResponse;
-import roomescape.support.BaseTestService;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static roomescape.apply.member.domain.MemberRoleName.ADMIN;
+import static roomescape.apply.member.domain.MemberRoleName.GUEST;
 import static roomescape.support.MemberFixture.memberRequest;
 
-class MemberAdderTest extends BaseTestService {
+class MemberAdderTest {
 
     private MemberAdder memberAdder;
     private MemberRepository memberRepository;
@@ -26,9 +26,8 @@ class MemberAdderTest extends BaseTestService {
 
     @BeforeEach
     void setUp() {
-        transactionStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        memberRepository = new MemberJDBCRepository(template);
-        memberRoleRepository = new MemberRoleJDBCRepository(template);
+        memberRepository = new InMemoryMemberRepository();
+        memberRoleRepository = new InMemoryMemberRoleRepository();
 
         var passwordHasher = new MockPasswordHasher();
         var memberRoleFinder = new MemberRoleFinder(memberRoleRepository);
@@ -39,11 +38,6 @@ class MemberAdderTest extends BaseTestService {
                 memberDuplicateChecker,
                 memberRoleSaver
         );
-    }
-
-    @AfterEach
-    void clear() {
-        transactionManager.rollback(transactionStatus);
     }
 
     @Test
@@ -58,9 +52,9 @@ class MemberAdderTest extends BaseTestService {
         assertThat(memberResponse.name()).isEqualTo(request.name());
         var member = memberRepository.findByEmailAndPassword(request.email(), request.password())
                 .orElseThrow();
-        List<String> savedRoleNames = memberRoleRepository.findNamesByMemberId(member.getId());
+        List<MemberRoleName> savedRoleNames = memberRoleRepository.findNamesByMemberId(member.getId());
         assertThat(savedRoleNames).isNotNull().hasSize(2)
-                .containsExactlyInAnyOrder("GUEST", "ADMIN");
+                .containsExactlyInAnyOrder(GUEST, ADMIN);
     }
 
 }
