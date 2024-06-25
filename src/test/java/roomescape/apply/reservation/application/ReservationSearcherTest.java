@@ -37,7 +37,7 @@ class ReservationSearcherTest {
         themeRepository = new InMemoryThemeRepository();
         memberRepository = new InMemoryMemberRepository();
         reservationRepository = new InMemoryReservationRepository();
-        reservationTimeRepository = new InMemoryReservationTimeRepository();
+        reservationTimeRepository = new InMemoryReservationTimeRepository(reservationRepository);
 
         reservationSearcher = new ReservationSearcher(reservationRepository);
     }

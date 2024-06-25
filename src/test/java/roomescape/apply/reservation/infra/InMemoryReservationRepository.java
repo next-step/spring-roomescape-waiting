@@ -25,7 +25,7 @@ public class InMemoryReservationRepository implements ReservationRepository {
     }
 
     @Override
-    public List<Reservation> findAll() {
+    public List<Reservation> findAllFetchJoinThemeAndTime() {
         return new ArrayList<>(map.values());
     }
 
@@ -78,12 +78,4 @@ public class InMemoryReservationRepository implements ReservationRepository {
                 .toList();
     }
 
-    @Override
-    public List<Long> findReservedTimeIdsInDateAndThemeId(String date, long themeId) {
-        return map.values().stream()
-                .filter(it -> it.getReservationDate().value().equals(date))
-                .filter(it -> it.getTheme().getId().equals(themeId))
-                .map(Reservation::getId)
-                .toList();
-    }
 }

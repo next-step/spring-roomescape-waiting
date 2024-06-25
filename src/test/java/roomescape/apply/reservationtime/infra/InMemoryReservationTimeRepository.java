@@ -1,7 +1,9 @@
 package roomescape.apply.reservationtime.infra;
 
+import roomescape.apply.reservation.domain.ReservationRepository;
 import roomescape.apply.reservationtime.domain.ReservationTime;
 import roomescape.apply.reservationtime.domain.ReservationTimeRepository;
+import roomescape.apply.reservationtime.ui.dto.AvailableReservationTimeResponse;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -11,6 +13,11 @@ public class InMemoryReservationTimeRepository implements ReservationTimeReposit
 
     private final Map<Long, ReservationTime> map = new HashMap<>();
     private final AtomicLong idCounter = new AtomicLong();
+    private final ReservationRepository reservationRepository;
+
+    public InMemoryReservationTimeRepository(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
+    }
 
     @Override
     public ReservationTime save(ReservationTime reservationTime) {
@@ -42,5 +49,21 @@ public class InMemoryReservationTimeRepository implements ReservationTimeReposit
     @Override
     public Optional<ReservationTime> findOneById(long themeId) {
         return Optional.ofNullable(map.get(themeId));
+    }
+
+    @Override
+    public List<AvailableReservationTimeResponse> findReservationTimesWithIsReservedInDateAndThemeId(String date,
+                                                                                                     long themeId) {
+        var reservationTimes = map.values().stream().toList();
+        var reservedTimeIds = reservationRepository.findAllFetchJoinThemeAndTime()
+                .stream()
+                .filter(it -> it.getReservationDate().value().equals(date))
+                .filter(it -> it.getTheme().getId() == themeId)
+                .map(it -> it.getTime().getId())
+                .toList();
+
+        return reservationTimes.stream()
+                .map(it -> new AvailableReservationTimeResponse(it.getId(), it.getStartAt(), reservedTimeIds.contains(it.getId())))
+                .toList();
     }
 }

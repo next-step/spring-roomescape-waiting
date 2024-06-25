@@ -35,7 +35,7 @@ class ReservationTimeDeleterTest {
     void setUp() {
         themeRepository = new InMemoryThemeRepository();
         reservationRepository = new InMemoryReservationRepository();
-        reservationTimeRepository = new InMemoryReservationTimeRepository();
+        reservationTimeRepository = new InMemoryReservationTimeRepository(reservationRepository);
         memberRepository = new InMemoryMemberRepository();
 
         var reservationFinder = new ReservationFinder(reservationRepository);

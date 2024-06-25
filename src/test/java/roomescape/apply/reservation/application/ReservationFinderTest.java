@@ -35,7 +35,7 @@ class ReservationFinderTest {
     @BeforeEach
     void setUp() {
         reservationRepository = new InMemoryReservationRepository();
-        reservationTimeRepository = new InMemoryReservationTimeRepository();
+        reservationTimeRepository = new InMemoryReservationTimeRepository(reservationRepository);
         themeRepository = new InMemoryThemeRepository();
         memberRepository = new InMemoryMemberRepository();
 

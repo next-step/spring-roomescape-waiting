@@ -34,8 +34,8 @@ class ThemeDeleterTest {
     @BeforeEach
     void setUp() {
         themeRepository = new InMemoryThemeRepository();
-        reservationTimeRepository = new InMemoryReservationTimeRepository();
         reservationRepository = new InMemoryReservationRepository();
+        reservationTimeRepository = new InMemoryReservationTimeRepository(reservationRepository);
         memberRepository = new InMemoryMemberRepository();
 
         var reservationFinder = new ReservationFinder(reservationRepository);

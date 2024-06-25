@@ -4,17 +4,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import roomescape.apply.member.domain.Member;
-import roomescape.apply.member.infra.InMemoryMemberRepository;
 import roomescape.apply.member.domain.MemberRepository;
-import roomescape.apply.reservation.application.ReservationFinder;
-import roomescape.apply.reservation.infra.InMemoryReservationRepository;
+import roomescape.apply.member.infra.InMemoryMemberRepository;
 import roomescape.apply.reservation.domain.ReservationRepository;
-import roomescape.apply.reservationtime.infra.InMemoryReservationTimeRepository;
+import roomescape.apply.reservation.infra.InMemoryReservationRepository;
 import roomescape.apply.reservationtime.domain.ReservationTimeRepository;
+import roomescape.apply.reservationtime.infra.InMemoryReservationTimeRepository;
 import roomescape.apply.reservationtime.ui.dto.ReservationTimeResponse;
 import roomescape.apply.theme.domain.Theme;
-import roomescape.apply.theme.infra.InMemoryThemeRepository;
 import roomescape.apply.theme.domain.ThemeRepository;
+import roomescape.apply.theme.infra.InMemoryThemeRepository;
 
 import java.util.List;
 
@@ -32,11 +31,11 @@ class ReservationTimeFinderTest {
 
     @BeforeEach
     void setUp() {
-        reservationTimeRepository = new InMemoryReservationTimeRepository();
         reservationRepository = new InMemoryReservationRepository();
+        reservationTimeRepository = new InMemoryReservationTimeRepository(reservationRepository);
         themeRepository = new InMemoryThemeRepository();
         memberRepository = new InMemoryMemberRepository();
-        reservationTimeFinder = new ReservationTimeFinder(new ReservationFinder(reservationRepository), reservationTimeRepository);
+        reservationTimeFinder = new ReservationTimeFinder(reservationTimeRepository);
     }
 
     @Test

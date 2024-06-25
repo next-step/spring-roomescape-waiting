@@ -39,8 +39,8 @@ class ReservationRecorderTest {
 
     @BeforeEach
     void setUp() {
-        reservationTimeRepository = new InMemoryReservationTimeRepository();
         var reservationRepository = new InMemoryReservationRepository();
+        reservationTimeRepository = new InMemoryReservationTimeRepository(reservationRepository);
         themeRepository = new InMemoryThemeRepository();
         memberRepository = new InMemoryMemberRepository();
         var memberRoleRepository = new InMemoryMemberRoleRepository();
@@ -49,7 +49,7 @@ class ReservationRecorderTest {
         var memberRoleFinder = new MemberRoleFinder(memberRoleRepository);
         var memberFinder = new MemberFinder(new MockPasswordHasher(), memberRepository, memberRoleFinder);
         var reservationFinder = new ReservationFinder(reservationRepository);
-        var reservationTimeFinder = new ReservationTimeFinder(reservationFinder, reservationTimeRepository);
+        var reservationTimeFinder = new ReservationTimeFinder(reservationTimeRepository);
         reservationRecorder = new ReservationRecorder(reservationRepository,
                 reservationTimeFinder,
                 themeFinder,

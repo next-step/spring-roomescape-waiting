@@ -31,7 +31,7 @@ class ReservationCancelerTest {
     @BeforeEach
     void setUp() {
         reservationRepository = new InMemoryReservationRepository();
-        reservationTimeRepository = new InMemoryReservationTimeRepository();
+        reservationTimeRepository = new InMemoryReservationTimeRepository(reservationRepository);
         themeRepository = new InMemoryThemeRepository();
         memberRepository = new InMemoryMemberRepository();
 
@@ -46,11 +46,11 @@ class ReservationCancelerTest {
         ReservationTime saveReservationTime = reservationTimeRepository.save(reservationTime());
         Theme saveTheme = themeRepository.save(theme());
         Reservation saved = reservationRepository.save(reservation(saveReservationTime, saveTheme, "2099-01-01", saveMember.getId()));
-        assertThat(reservationRepository.findAll().size()).isNotZero();
+        assertThat(reservationRepository.findAllFetchJoinThemeAndTime().size()).isNotZero();
         // when
         reservationCanceler.cancelReservation(saved.getId());
         // then
-        assertThat(reservationRepository.findAll()).isEmpty();
+        assertThat(reservationRepository.findAllFetchJoinThemeAndTime()).isEmpty();
     }
 
 }
