@@ -11,7 +11,7 @@ import roomescape.apply.auth.application.annotation.NeedMemberRole;
 import roomescape.apply.auth.application.exception.IllegalTokenException;
 import roomescape.apply.auth.application.exception.TokenNotFoundException;
 import roomescape.apply.member.domain.MemberRoleName;
-import roomescape.apply.member.domain.MemberRoleNames;
+import roomescape.apply.member.ui.dto.MemberRoleNamesResponse;
 import roomescape.support.ServletRequestTokenFinder;
 
 import java.io.IOException;
@@ -49,8 +49,8 @@ public class MemberRoleAccessInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        String roleNames = jwtTokenManager.getRoleNameFromToken(token);
-        Set<MemberRoleName> memberRoleNames = MemberRoleNames.getMemberRolesByRoleNames(roleNames);
+        String roleValues = jwtTokenManager.getRoleNameFromToken(token);
+        Set<MemberRoleName> memberRoleNames = MemberRoleNamesResponse.getMemberRolesByRoleValues(roleValues);
         Set<MemberRoleName> requiredRoleNames = getRequiredMemberRolesInMethod(handler);
         boolean containRole = requiredRoleNames.stream().anyMatch(memberRoleNames::contains);
         if (!containRole) {

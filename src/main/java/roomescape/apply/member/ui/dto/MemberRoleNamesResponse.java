@@ -1,4 +1,6 @@
-package roomescape.apply.member.domain;
+package roomescape.apply.member.ui.dto;
+
+import roomescape.apply.member.domain.MemberRoleName;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -6,21 +8,21 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
 
-public record MemberRoleNames(Set<MemberRoleName> roleNames) {
+public record MemberRoleNamesResponse(Set<MemberRoleName> roleNames) {
 
     private static final String DELIMITER = ",";
 
-    public static MemberRoleNames of(Set<MemberRoleName> rolesInMember) {
-        return new MemberRoleNames(rolesInMember);
+    public static MemberRoleNamesResponse of(Set<MemberRoleName> rolesInMember) {
+        return new MemberRoleNamesResponse(rolesInMember);
     }
 
-    public static Set<MemberRoleName> getMemberRolesByRoleNames(String roleNames) {
-        String[] roleNameValues = roleNames.split(DELIMITER);
-        if (roleNameValues.length == 0) {
+    public static Set<MemberRoleName> getMemberRolesByRoleValues(String roleValues) {
+        String[] values = roleValues.split(DELIMITER);
+        if (values.length == 0) {
             return Collections.emptySet();
         }
 
-        return Arrays.stream(roleNameValues).map(MemberRoleName::findRoleByValue).collect(toSet());
+        return Arrays.stream(values).map(MemberRoleName::findRoleByValue).collect(toSet());
     }
 
 

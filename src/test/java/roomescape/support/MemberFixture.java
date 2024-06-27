@@ -4,7 +4,7 @@ import roomescape.apply.auth.ui.dto.LoginMember;
 import roomescape.apply.member.domain.Member;
 import roomescape.apply.member.domain.MemberRole;
 import roomescape.apply.member.domain.MemberRoleName;
-import roomescape.apply.member.domain.MemberRoleNames;
+import roomescape.apply.member.ui.dto.MemberRoleNamesResponse;
 import roomescape.apply.member.ui.dto.MemberRequest;
 
 import java.util.Set;
@@ -42,13 +42,13 @@ public class MemberFixture {
     }
 
     public static LoginMember loginMember() {
-        MemberRoleNames memberRoleNames = MemberRoleNames.of(Set.of(MemberRoleName.ADMIN));
-        return LoginMember.from(member(), memberRoleNames);
+        MemberRoleNamesResponse memberRoleNamesResponse = MemberRoleNamesResponse.of(Set.of(MemberRoleName.ADMIN));
+        return LoginMember.from(member(), memberRoleNamesResponse);
     }
 
     public static LoginMember loginMember(Member member) {
-        MemberRoleNames memberRoleNames = MemberRoleNames.of(Set.of(MemberRoleName.ADMIN));
-        return LoginMember.from(member, memberRoleNames);
+        MemberRoleNamesResponse memberRoleNamesResponse = MemberRoleNamesResponse.of(Set.of(MemberRoleName.ADMIN));
+        return LoginMember.from(member, memberRoleNamesResponse);
     }
 
 }

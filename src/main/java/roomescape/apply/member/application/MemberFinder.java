@@ -9,7 +9,7 @@ import roomescape.apply.auth.ui.dto.LoginRequest;
 import roomescape.apply.auth.ui.dto.LoginResponse;
 import roomescape.apply.member.domain.Member;
 import roomescape.apply.member.domain.MemberRoleName;
-import roomescape.apply.member.domain.MemberRoleNames;
+import roomescape.apply.member.ui.dto.MemberRoleNamesResponse;
 import roomescape.apply.member.domain.MemberRepository;
 import roomescape.apply.member.ui.dto.MemberResponse;
 
@@ -47,7 +47,7 @@ public class MemberFinder {
 
         Set<MemberRoleName> rolesInMember = memberRoleFinder.findRolesInMember(member.getId());
 
-        return LoginResponse.from(member, MemberRoleNames.of(rolesInMember));
+        return LoginResponse.from(member, MemberRoleNamesResponse.of(rolesInMember));
     }
 
     public boolean isDuplicateEmail(String email) {
@@ -58,7 +58,7 @@ public class MemberFinder {
         Member member = memberRepository.findOneByEmail(email)
                 .orElseThrow(() -> new IllegalTokenException("이메일이 존재하지 않습니다. 다시 로그인해주세요."));
         Set<MemberRoleName> rolesInMember = memberRoleFinder.findRolesInMember(member.getId());
-        return LoginMember.from(member, MemberRoleNames.of(rolesInMember));
+        return LoginMember.from(member, MemberRoleNamesResponse.of(rolesInMember));
     }
 
     public Member findOneNameById(long memberId) {

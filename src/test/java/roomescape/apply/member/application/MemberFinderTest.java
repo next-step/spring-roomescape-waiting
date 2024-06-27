@@ -61,7 +61,7 @@ class MemberFinderTest {
         assertThat(loginResponse).isNotNull();
         assertThat(loginResponse.name()).isEqualTo(targetName);
         assertThat(loginResponse.email()).isEqualTo(request.email());
-        assertThat(loginResponse.memberRoleNames()).isNotNull();
+        assertThat(loginResponse.memberRoleNamesResponse()).isNotNull();
     }
 
 

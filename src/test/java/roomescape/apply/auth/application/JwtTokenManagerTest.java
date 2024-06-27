@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import roomescape.apply.auth.application.exception.IllegalTokenException;
 import roomescape.apply.auth.ui.dto.LoginResponse;
 import roomescape.apply.member.domain.MemberRoleName;
-import roomescape.apply.member.domain.MemberRoleNames;
+import roomescape.apply.member.ui.dto.MemberRoleNamesResponse;
 
 import java.util.Set;
 
@@ -30,7 +30,7 @@ class JwtTokenManagerTest {
         // given
         var loginResponse = new LoginResponse("tester@gmail.com",
                 "test",
-                MemberRoleNames.of(Set.of(MemberRoleName.GUEST)));
+                MemberRoleNamesResponse.of(Set.of(MemberRoleName.GUEST)));
         // when
         String token = jwtTokenManager.generateTokenByLoginResponse(loginResponse);
         // then
@@ -43,7 +43,7 @@ class JwtTokenManagerTest {
         // given
         var loginResponse = new LoginResponse("tester@gmail.com",
                 "test",
-                MemberRoleNames.of(Set.of(MemberRoleName.GUEST)));
+                MemberRoleNamesResponse.of(Set.of(MemberRoleName.GUEST)));
         String token = jwtTokenManager.generateTokenByLoginResponse(loginResponse);
         // when && then
         assertDoesNotThrow(() -> jwtTokenManager.validateToken(token));
@@ -63,7 +63,7 @@ class JwtTokenManagerTest {
         // given
         var loginResponse = new LoginResponse("tester@gmail.com",
                 "test",
-                MemberRoleNames.of(Set.of(MemberRoleName.GUEST)));
+                MemberRoleNamesResponse.of(Set.of(MemberRoleName.GUEST)));
         // when
         String token = jwtTokenManager.generateTokenByLoginResponse(loginResponse);
         // then

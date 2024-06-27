@@ -35,7 +35,7 @@ public class JwtTokenManager {
         return Jwts.builder()
                 .subject(loginResponse.email())
                 .claim(NAME_CLAIM, loginResponse.name())
-                .claim(ROLE_CLAIM, loginResponse.memberRoleNames())
+                .claim(ROLE_CLAIM, loginResponse.memberRoleNamesResponse())
                 .issuedAt(tokenValidityPeriod.createdAt())
                 .expiration(tokenValidityPeriod.expirationAt())
                 .signWith(secretKey)
