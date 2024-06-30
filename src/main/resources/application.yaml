@@ -1,0 +1,17 @@
+spring:
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:database;MODE=MySQL
+    driver-class-name: org.h2.Driver
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    ddl-auto: create-drop
+    defer-datasource-initialization: true
+jwt:
+  secret-key: Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=
+  validity-in-milliseconds: 3600000
