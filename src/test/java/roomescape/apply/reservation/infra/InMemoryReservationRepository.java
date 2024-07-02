@@ -30,8 +30,8 @@ public class InMemoryReservationRepository implements ReservationRepository {
     }
 
     @Override
-    public Optional<Long> findIdById(long id) {
-        return map.containsKey(id) ? Optional.of(id) : Optional.empty();
+    public Optional<Reservation> findOneById(long id) {
+        return map.containsKey(id) ? Optional.of(map.get(id)) : Optional.empty();
     }
 
     @Override
