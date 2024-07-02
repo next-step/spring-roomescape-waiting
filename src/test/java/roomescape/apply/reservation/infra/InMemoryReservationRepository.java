@@ -78,4 +78,11 @@ public class InMemoryReservationRepository implements ReservationRepository {
                 .toList();
     }
 
+    @Override
+    public List<Reservation> findAllByMemberId(long memberId) {
+        return map.values().stream()
+                .filter(it -> it.getMemberId().equals(memberId))
+                .toList();
+    }
+
 }
