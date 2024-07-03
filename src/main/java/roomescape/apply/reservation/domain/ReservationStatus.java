@@ -1,17 +1,18 @@
 package roomescape.apply.reservation.domain;
 
+import roomescape.apply.reservation.ui.dto.ReservationStatusMessages;
+
 public enum ReservationStatus {
-    WAITING("예약 대기"),
-    RESERVED("예약"),
-    CANCELED("예약 취소");
+    WAITING,
+    RESERVED,
+    CANCELED;
 
-    private final String value;
-
-    ReservationStatus(String value) {
-        this.value = value;
-    }
-
-    public String value() {
-        return value;
+    public String toMessage() {
+        final var reservationStatusMessages = new ReservationStatusMessages();
+        return switch (this) {
+            case WAITING -> reservationStatusMessages.waitingMessage();
+            case RESERVED -> reservationStatusMessages.reservedMessage();
+            case CANCELED -> reservationStatusMessages.canceledMessage();
+        };
     }
 }

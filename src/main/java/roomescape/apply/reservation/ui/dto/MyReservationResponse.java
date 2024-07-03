@@ -16,6 +16,6 @@ public record MyReservationResponse(
 ) {
     public static MyReservationResponse from(Reservation reservation, Theme theme, ReservationTime reservationTime) {
         return new MyReservationResponse(reservation.getId(), reservation.getName(), reservation.getReservationDate().value(),
-                ThemeResponse.from(theme), ReservationTimeResponse.from(reservationTime), reservation.getReservationStatus().value());
+                ThemeResponse.from(theme), ReservationTimeResponse.from(reservationTime), reservation.getReservationStatus().toMessage());
     }
 }
