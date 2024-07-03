@@ -9,7 +9,6 @@ import roomescape.apply.member.ui.dto.MemberResponse;
 import roomescape.apply.reservation.application.excpetion.DuplicateReservationException;
 import roomescape.apply.reservation.domain.Reservation;
 import roomescape.apply.reservation.domain.ReservationRepository;
-import roomescape.apply.reservation.domain.ReservationStatus;
 import roomescape.apply.reservation.ui.dto.ReservationAdminRequest;
 import roomescape.apply.reservation.ui.dto.ReservationAdminResponse;
 import roomescape.apply.reservation.ui.dto.ReservationRequest;
@@ -46,7 +45,7 @@ public class ReservationRecorder {
         final Theme theme = themeFinder.findOneById(request.themeId());
         final Reservation reservation = Reservation.of(loginMember.name(), request.date(), time, theme, loginMember.id());
         // TODO: 이 부분을 도메인 이벤트로해서 동시성 개선 가능
-        reservation.changeReservationStatus(ReservationStatus.RESERVED);
+        reservation.reserve();
         final Reservation saved = reservationRepository.save(reservation);
 
         return ReservationResponse.from(saved, theme, time);
@@ -60,8 +59,7 @@ public class ReservationRecorder {
         final ReservationTime time = reservationTimeFinder.findOneById(request.timeId());
         final Theme theme = themeFinder.findOneById(request.themeId());
         final Reservation reservation = Reservation.of(member.getName(), request.date(), time, theme, member.getId());
-        // TODO: 이 부분을 도메인 이벤트로해서 동시성 개선 가능
-        reservation.changeReservationStatus(ReservationStatus.RESERVED);
+        reservation.reserve();
         final Reservation saved = reservationRepository.save(reservation);
 
         return ReservationAdminResponse.from(saved, theme, time, MemberResponse.from(member.getId(), member.getName()));

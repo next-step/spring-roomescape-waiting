@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional;
 import roomescape.apply.reservation.application.excpetion.NotFoundReservationException;
 import roomescape.apply.reservation.domain.Reservation;
 import roomescape.apply.reservation.domain.ReservationRepository;
-import roomescape.apply.reservation.domain.ReservationStatus;
 
 @Service
 public class ReservationCanceler {
@@ -19,7 +18,7 @@ public class ReservationCanceler {
     @Transactional
     public void cancelReservation(long id) {
         Reservation foundReservation = reservationRepository.findOneById(id).orElseThrow(NotFoundReservationException::new);
-        foundReservation.changeReservationStatus(ReservationStatus.CANCELED);
+        foundReservation.cancel();
         reservationRepository.save(foundReservation);
     }
 }

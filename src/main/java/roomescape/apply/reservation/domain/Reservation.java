@@ -52,8 +52,12 @@ public class Reservation {
         this.id = id;
     }
 
-    public void changeReservationStatus(ReservationStatus status) {
-        this.reservationStatus = status;
+    public void reserve() {
+        this.reservationStatus = ReservationStatus.RESERVED;
+    }
+
+    public void cancel() {
+        this.reservationStatus = ReservationStatus.CANCELED;
     }
 
     public Long getId() {
@@ -77,7 +81,7 @@ public class Reservation {
     }
 
     public Long getMemberId() {
-        return memberId.longValue();
+        return memberId;
     }
 
     public ReservationStatus getReservationStatus() {
