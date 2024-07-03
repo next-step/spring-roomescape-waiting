@@ -41,7 +41,7 @@ public class ReservationFinder {
     }
 
     public boolean doesReservationExist(long timeId, long themeId) {
-        Optional<Long> existedId = reservationRepository.findIdByTimeIdAndThemeId(timeId, themeId);
+        Optional<Long> existedId = reservationRepository.findReservedIdByTimeIdAndThemeId(timeId, themeId);
         return existedId.isPresent();
     }
 

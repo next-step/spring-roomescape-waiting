@@ -35,7 +35,7 @@ public interface ReservationRepository {
                     AND r.theme.id = :themeId
                     AND r.reservationStatus = 'RESERVED'
             """)
-    Optional<Long> findIdByTimeIdAndThemeId(@Param("timeId") long timeId, @Param("themeId") long themeId);
+    Optional<Long> findReservedIdByTimeIdAndThemeId(@Param("timeId") long timeId, @Param("themeId") long themeId);
 
     @Query("SELECT r.id FROM Reservation r WHERE r.time.id = :timeId")
     Optional<Long> findIdByTimeId(@Param("timeId") long timeId);
