@@ -40,7 +40,7 @@ public class InMemoryReservationRepository implements ReservationRepository {
     }
 
     @Override
-    public Optional<Long> findIdByTimeIdAndThemeId(long timeId, long themeId) {
+    public Optional<Long> findReservedIdByTimeIdAndThemeId(long timeId, long themeId) {
         return map.values().stream()
                 .filter(it -> timeId == it.getTime().getId())
                 .filter(it -> themeId == it.getTheme().getId())
