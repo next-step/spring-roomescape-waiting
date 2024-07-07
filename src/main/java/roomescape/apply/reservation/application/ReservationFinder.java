@@ -8,7 +8,10 @@ import roomescape.apply.reservation.domain.ReservationRepository;
 import roomescape.apply.reservation.ui.dto.MyReservationResponse;
 import roomescape.apply.reservation.ui.dto.ReservationAdminResponse;
 import roomescape.apply.reservation.ui.dto.ReservationResponse;
+import roomescape.apply.reservationwaiting.application.ReservationWaitingFinder;
+import roomescape.apply.reservationwaiting.ui.dto.ReservationWaitingResponse;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,9 +20,12 @@ import java.util.Optional;
 public class ReservationFinder {
 
     private final ReservationRepository reservationRepository;
+    public final ReservationWaitingFinder reservationWaitingFinder;
 
-    public ReservationFinder(ReservationRepository reservationRepository) {
+    public ReservationFinder(ReservationRepository reservationRepository,
+                             ReservationWaitingFinder reservationWaitingFinder) {
         this.reservationRepository = reservationRepository;
+        this.reservationWaitingFinder = reservationWaitingFinder;
     }
 
     public List<ReservationResponse> findAll() {
@@ -53,10 +59,20 @@ public class ReservationFinder {
         return reservationRepository.findIdByThemeId(themeId);
     }
 
-    public List<MyReservationResponse> findAllCreatedByLoginMember(LoginMember memberId) {
-        return reservationRepository.findAllByMemberId(memberId.id())
+    public List<MyReservationResponse> findAllCreatedByLoginMember(LoginMember loginMember) {
+        long memberId = loginMember.id();
+        List<MyReservationResponse> reservationList = reservationRepository.findAllByMemberId(memberId)
                 .stream()
                 .map(it -> MyReservationResponse.from(it, it.getTheme(), it.getTime()))
                 .toList();
+        List<MyReservationResponse> waitingList = reservationWaitingFinder.findReservationWaitingListByMemberId(memberId)
+                .stream()
+                .map(MyReservationResponse::fromWaitingResponse)
+                .toList();
+
+        reservationList.addAll(waitingList);
+        reservationList.sort(Comparator.comparing(MyReservationResponse::date));
+
+        return reservationList;
     }
 }
