@@ -13,6 +13,10 @@ import roomescape.apply.reservation.infra.InMemoryReservationRepository;
 import roomescape.apply.reservationtime.domain.ReservationTime;
 import roomescape.apply.reservationtime.domain.ReservationTimeRepository;
 import roomescape.apply.reservationtime.infra.InMemoryReservationTimeRepository;
+import roomescape.apply.reservationwaiting.application.ReservationWaitingFinder;
+import roomescape.apply.reservationwaiting.application.WaitingPositionCalculator;
+import roomescape.apply.reservationwaiting.domain.ReservationWaitingRepository;
+import roomescape.apply.reservationwaiting.infra.InMemoryReservationWaitingRepository;
 import roomescape.apply.theme.application.exception.ThemeReferencedException;
 import roomescape.apply.theme.domain.Theme;
 import roomescape.apply.theme.domain.ThemeRepository;
@@ -30,6 +34,7 @@ class ThemeDeleterTest {
     private MemberRepository memberRepository;
     private ReservationRepository reservationRepository;
     private ReservationTimeRepository reservationTimeRepository;
+    private ReservationWaitingRepository reservationWaitingRepository;
 
     @BeforeEach
     void setUp() {
@@ -37,8 +42,12 @@ class ThemeDeleterTest {
         reservationRepository = new InMemoryReservationRepository();
         reservationTimeRepository = new InMemoryReservationTimeRepository(reservationRepository);
         memberRepository = new InMemoryMemberRepository();
+        reservationWaitingRepository = new InMemoryReservationWaitingRepository();
 
-        var reservationFinder = new ReservationFinder(reservationRepository);
+        var waitingPositionCalculator = new WaitingPositionCalculator(reservationWaitingRepository);
+        var reservationWaitingFinder = new ReservationWaitingFinder(waitingPositionCalculator,
+                                                                    reservationWaitingRepository);
+        var reservationFinder = new ReservationFinder(reservationRepository, reservationWaitingFinder);
         themeDeleter = new ThemeDeleter(themeRepository, reservationFinder);
     }
 

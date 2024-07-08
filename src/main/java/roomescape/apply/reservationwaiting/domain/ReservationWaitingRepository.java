@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ReservationWaitingRepository {
     ReservationWaiting save(ReservationWaiting reservationWaiting);
-    @Query("SELECT rw FROM ReservationWaiting rw WHERE rw.member.id = :memberId")
+    @Query("SELECT rw FROM ReservationWaiting rw WHERE rw.memberId = :memberId")
     List<ReservationWaiting> findAllByMemberId(@Param("memberId") Long memberId);
     @Query("""
     SELECT
@@ -17,9 +17,9 @@ public interface ReservationWaitingRepository {
      FROM
         ReservationWaiting rw
      WHERE
-        rw.themeId = :themeId
-        AND rw.date = :date
-        AND rw.timeId = :timeId
+        rw.theme.id = :themeId
+        AND rw.reservationDate.date = :date
+        AND rw.time.id = :timeId
         AND rw.waitingTime < :waitingTime
     """)
     long countByThemeIdAndDateAndTimeIdAndWaitingTimeLessThan(@Param("themeId") long themeId,

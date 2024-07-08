@@ -42,6 +42,10 @@ public class ReservationWaiting {
         return reservationWaiting;
     }
 
+    public void changeId(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
@@ -65,4 +69,5 @@ public class ReservationWaiting {
     public Long getMemberId() {
         return memberId;
     }
+
 }

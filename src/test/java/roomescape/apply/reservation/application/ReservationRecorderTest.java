@@ -19,6 +19,10 @@ import roomescape.apply.reservationtime.application.ReservationTimeFinder;
 import roomescape.apply.reservationtime.domain.ReservationTime;
 import roomescape.apply.reservationtime.domain.ReservationTimeRepository;
 import roomescape.apply.reservationtime.infra.InMemoryReservationTimeRepository;
+import roomescape.apply.reservationwaiting.application.ReservationWaitingFinder;
+import roomescape.apply.reservationwaiting.application.WaitingPositionCalculator;
+import roomescape.apply.reservationwaiting.domain.ReservationWaitingRepository;
+import roomescape.apply.reservationwaiting.infra.InMemoryReservationWaitingRepository;
 import roomescape.apply.theme.application.ThemeFinder;
 import roomescape.apply.theme.domain.Theme;
 import roomescape.apply.theme.domain.ThemeRepository;
@@ -36,6 +40,7 @@ class ReservationRecorderTest {
     private ReservationTimeRepository reservationTimeRepository;
     private ThemeRepository themeRepository;
     private MemberRepository memberRepository;
+    private ReservationWaitingRepository reservationWaitingRepository;
 
     @BeforeEach
     void setUp() {
@@ -44,11 +49,15 @@ class ReservationRecorderTest {
         themeRepository = new InMemoryThemeRepository();
         memberRepository = new InMemoryMemberRepository();
         var memberRoleRepository = new InMemoryMemberRoleRepository();
+        reservationWaitingRepository = new InMemoryReservationWaitingRepository();
 
         var themeFinder = new ThemeFinder(themeRepository);
         var memberRoleFinder = new MemberRoleFinder(memberRoleRepository);
         var memberFinder = new MemberFinder(new MockPasswordHasher(), memberRepository, memberRoleFinder);
-        var reservationFinder = new ReservationFinder(reservationRepository);
+        var waitingPositionCalculator = new WaitingPositionCalculator(reservationWaitingRepository);
+        var reservationWaitingFinder = new ReservationWaitingFinder(waitingPositionCalculator,
+                                                                    reservationWaitingRepository);
+        var reservationFinder = new ReservationFinder(reservationRepository, reservationWaitingFinder);
         var reservationTimeFinder = new ReservationTimeFinder(reservationTimeRepository);
         reservationRecorder = new ReservationRecorder(reservationRepository,
                 reservationTimeFinder,

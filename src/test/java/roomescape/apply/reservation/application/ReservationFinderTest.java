@@ -13,6 +13,10 @@ import roomescape.apply.reservation.ui.dto.ReservationResponse;
 import roomescape.apply.reservationtime.domain.ReservationTime;
 import roomescape.apply.reservationtime.domain.ReservationTimeRepository;
 import roomescape.apply.reservationtime.infra.InMemoryReservationTimeRepository;
+import roomescape.apply.reservationwaiting.application.ReservationWaitingFinder;
+import roomescape.apply.reservationwaiting.application.WaitingPositionCalculator;
+import roomescape.apply.reservationwaiting.domain.ReservationWaitingRepository;
+import roomescape.apply.reservationwaiting.infra.InMemoryReservationWaitingRepository;
 import roomescape.apply.theme.domain.Theme;
 import roomescape.apply.theme.domain.ThemeRepository;
 import roomescape.apply.theme.infra.InMemoryThemeRepository;
@@ -31,6 +35,7 @@ class ReservationFinderTest {
     private ReservationTimeRepository reservationTimeRepository;
     private ThemeRepository themeRepository;
     private MemberRepository memberRepository;
+    private ReservationWaitingRepository reservationWaitingRepository;
 
     @BeforeEach
     void setUp() {
@@ -38,8 +43,12 @@ class ReservationFinderTest {
         reservationTimeRepository = new InMemoryReservationTimeRepository(reservationRepository);
         themeRepository = new InMemoryThemeRepository();
         memberRepository = new InMemoryMemberRepository();
+        reservationWaitingRepository = new InMemoryReservationWaitingRepository();
 
-        reservationFinder = new ReservationFinder(reservationRepository);
+        var waitingPositionCalculator = new WaitingPositionCalculator(reservationWaitingRepository);
+        var reservationWaitingFinder = new ReservationWaitingFinder(waitingPositionCalculator,
+                                                                    reservationWaitingRepository);
+        reservationFinder = new ReservationFinder(reservationRepository, reservationWaitingFinder);
     }
 
     @Test
