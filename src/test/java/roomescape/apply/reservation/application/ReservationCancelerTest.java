@@ -3,16 +3,25 @@ package roomescape.apply.reservation.application;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import roomescape.apply.member.application.MemberFinder;
+import roomescape.apply.member.application.MemberRoleFinder;
+import roomescape.apply.member.application.mock.MockPasswordHasher;
 import roomescape.apply.member.domain.Member;
 import roomescape.apply.member.domain.MemberRepository;
 import roomescape.apply.member.infra.InMemoryMemberRepository;
+import roomescape.apply.member.infra.InMemoryMemberRoleRepository;
 import roomescape.apply.reservation.domain.Reservation;
 import roomescape.apply.reservation.domain.ReservationRepository;
 import roomescape.apply.reservation.domain.ReservationStatus;
 import roomescape.apply.reservation.infra.InMemoryReservationRepository;
+import roomescape.apply.reservationtime.application.ReservationTimeFinder;
 import roomescape.apply.reservationtime.domain.ReservationTime;
 import roomescape.apply.reservationtime.domain.ReservationTimeRepository;
 import roomescape.apply.reservationtime.infra.InMemoryReservationTimeRepository;
+import roomescape.apply.reservationwaiting.application.ReservationWaitingFinder;
+import roomescape.apply.reservationwaiting.application.WaitingPositionCalculator;
+import roomescape.apply.reservationwaiting.infra.InMemoryReservationWaitingRepository;
+import roomescape.apply.theme.application.ThemeFinder;
 import roomescape.apply.theme.domain.Theme;
 import roomescape.apply.theme.domain.ThemeRepository;
 import roomescape.apply.theme.infra.InMemoryThemeRepository;
@@ -38,7 +47,12 @@ class ReservationCancelerTest {
         themeRepository = new InMemoryThemeRepository();
         memberRepository = new InMemoryMemberRepository();
 
-        reservationCanceler = new ReservationCanceler(reservationRepository);
+        var reservationWaitingRepository = new InMemoryReservationWaitingRepository();
+        var waitingPositionCalculator = new WaitingPositionCalculator(reservationWaitingRepository);
+        var reservationWaitingFinder = new ReservationWaitingFinder(waitingPositionCalculator, reservationWaitingRepository);
+
+        var reservationRecorder = getReservationRecorder(reservationWaitingFinder);
+        reservationCanceler = new ReservationCanceler(reservationRepository, reservationWaitingFinder, reservationRecorder);
     }
 
     @Test
@@ -57,5 +71,17 @@ class ReservationCancelerTest {
         assertThat(allFetchJoinThemeAndTime).extracting("reservationStatus")
                 .containsExactlyInAnyOrder(ReservationStatus.CANCELED);
     }
+
+    private ReservationRecorder getReservationRecorder(ReservationWaitingFinder reservationWaitingFinder) {
+        var memberFinder = new MemberFinder(new MockPasswordHasher(),
+                memberRepository,
+                new MemberRoleFinder(new InMemoryMemberRoleRepository()));
+        return new ReservationRecorder(reservationRepository,
+                new ReservationTimeFinder(reservationTimeRepository),
+                new ThemeFinder(themeRepository),
+                new ReservationFinder(reservationRepository, reservationWaitingFinder),
+                memberFinder);
+    }
+
 
 }
