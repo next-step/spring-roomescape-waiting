@@ -2,13 +2,11 @@ package roomescape.apply.reservationwaiting.ui;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import roomescape.apply.auth.application.annotation.NeedMemberRole;
 import roomescape.apply.auth.ui.dto.LoginMember;
 import roomescape.apply.member.domain.MemberRoleName;
+import roomescape.apply.reservationwaiting.application.ReservationWaitingDeleter;
 import roomescape.apply.reservationwaiting.application.ReservationWaitingSaver;
 import roomescape.apply.reservationwaiting.ui.dto.ReservationWaitingRequest;
 import roomescape.apply.reservationwaiting.ui.dto.ReservationWaitingResponse;
@@ -18,9 +16,13 @@ import roomescape.apply.reservationwaiting.ui.dto.ReservationWaitingResponse;
 public class ReservationWaitingController {
 
     private final ReservationWaitingSaver reservationWaitingSaver;
+    private final ReservationWaitingDeleter reservationWaitingDeleter;
 
-    public ReservationWaitingController(ReservationWaitingSaver reservationWaitingSaver) {
+    public ReservationWaitingController(ReservationWaitingSaver reservationWaitingSaver,
+                                        ReservationWaitingDeleter reservationWaitingDeleter
+    ) {
         this.reservationWaitingSaver = reservationWaitingSaver;
+        this.reservationWaitingDeleter = reservationWaitingDeleter;
     }
 
     @PostMapping
@@ -30,6 +32,13 @@ public class ReservationWaitingController {
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(reservationWaitingSaver.saveReservationWaitingBy(request, loginMember));
+    }
+
+    @DeleteMapping("/{id}")
+    @NeedMemberRole({MemberRoleName.ADMIN, MemberRoleName.GUEST})
+    public ResponseEntity<ReservationWaitingResponse> deleteReservationWaiting(@PathVariable Long id) {
+        reservationWaitingDeleter.deleteReservationWaiting(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

@@ -26,4 +26,9 @@ public interface ReservationWaitingRepository {
                                                               @Param("date") String date,
                                                               @Param("timeId") long timeId,
                                                               @Param("waitingTime") LocalDateTime waitingTime);
+
+    @Query("SELECT rw.id FROM ReservationWaiting rw WHERE rw.id = :id")
+    Optional<Long> findIdById(@Param("id") long id);
+
+    void deleteById(long id);
 }

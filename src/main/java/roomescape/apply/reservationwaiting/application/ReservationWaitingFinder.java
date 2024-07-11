@@ -32,5 +32,11 @@ public class ReservationWaitingFinder {
         }).toList();
     }
 
+
+    public Optional<ReservationWaiting> findOldestReservationWaitingBy(Long themeId,
+                                                                       String date,
+                                                                       Long timeId) {
+        return reservationWaitingRepository.findOldestWaitingByThemeIdAndDateAndTimeId(themeId, date, timeId);
+    }
 }
 
