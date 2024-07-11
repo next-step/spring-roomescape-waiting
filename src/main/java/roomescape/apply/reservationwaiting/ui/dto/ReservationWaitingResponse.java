@@ -17,6 +17,7 @@ public record ReservationWaitingResponse(
                                                   ThemeResponse themeResponse,
                                                   ReservationTimeResponse reservationTimeResponse
     ) {
+        waitingPosition++;
         String waitingPositionText = waitingPosition + "번째 예약 대기";
         return new ReservationWaitingResponse(reservationWaiting.getId(),
                                               waitingPositionText,

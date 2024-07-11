@@ -57,13 +57,13 @@ class WaitingPositionCalculatorTest {
         }
 
         // when && then
-        long expectWaitingPosition = 1;
+        long expectWaitingPosition = 0;
         for (String emailId : List.of("member1", "member2", "member3", "member4", "member5", "member6")) {
             Long memberId = memberRepository.findIdByEmail(emailId + "@gmail.com").orElseThrow();
             var waitingList = reservationWaitingRepository.findAllByMemberId(memberId);
             for (ReservationWaiting it : waitingList) {
                 long actualPosition = waitingPositionCalculator.calculateByReservationWaiting(it);
-                assertThat(actualPosition).isNotZero().isEqualTo(expectWaitingPosition);
+                assertThat(actualPosition).isEqualTo(expectWaitingPosition);
             }
 
             expectWaitingPosition++;

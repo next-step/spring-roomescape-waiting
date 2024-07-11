@@ -16,13 +16,12 @@ public class WaitingPositionCalculator {
     }
 
     public long calculateByReservationWaiting(ReservationWaiting waiting) {
-        long waitingPosition = reservationWaitingRepository.countByThemeIdAndDateAndTimeIdAndWaitingTimeLessThan(
+        return reservationWaitingRepository.countByThemeIdAndDateAndTimeIdAndWaitingTimeLessThan(
                 waiting.getTheme().getId(),
                 waiting.getReservationDate(),
                 waiting.getTime().getId(),
                 waiting.getWaitingTime()
         );
-        return waitingPosition + 1;
     }
 
 }
