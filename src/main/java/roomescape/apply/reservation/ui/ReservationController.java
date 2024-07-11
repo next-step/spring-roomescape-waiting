@@ -56,4 +56,9 @@ public class ReservationController {
     public ResponseEntity<List<MyReservationResponse>> getMemberReservations(LoginMember loginMember) {
         return ResponseEntity.ok(reservationFinder.findAllCreatedByLoginMember(loginMember));
     }
+
+    @GetMapping("/mine/v2")
+    public ResponseEntity<List<MyReservationResponse>> getMemberReservationsV2(LoginMember loginMember) {
+        return ResponseEntity.ok(reservationFinder.findAllCreatedByLoginMemberV2(loginMember));
+    }
 }

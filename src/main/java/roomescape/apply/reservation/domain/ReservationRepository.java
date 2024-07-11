@@ -45,6 +45,15 @@ public interface ReservationRepository {
 
     List<Reservation> searchReservationsBySearchParams(ReservationSearchParams searchParams);
 
-    @Query("SELECT r FROM Reservation r WHERE r.memberId = :memberId")
+    @Query("""
+            SELECT
+                r
+            FROM
+                Reservation r
+                join FETCH r.theme
+                join FETCH r.time
+            WHERE
+                r.memberId = :memberId
+            """)
     List<Reservation> findAllByMemberId(@Param("memberId") long memberId);
 }

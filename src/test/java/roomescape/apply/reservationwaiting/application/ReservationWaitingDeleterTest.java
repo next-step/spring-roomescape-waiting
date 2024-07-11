@@ -59,7 +59,7 @@ class ReservationWaitingDeleterTest {
         reservationWaitingDeleter.deleteReservationWaiting(id);
 
         // then
-        assertThat(reservationWaitingRepository.findIdById(id)).isEmpty();
+        assertThat(reservationWaitingRepository.findIdById(id)).isNotPresent();
     }
 
 }

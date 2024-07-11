@@ -16,20 +16,22 @@ public interface ReservationWaitingRepository {
     List<ReservationWaiting> findAllByMemberId(@Param("memberId") Long memberId);
 
     @Query("""
-    SELECT
-        COUNT(rw)
-     FROM
-        ReservationWaiting rw
-     WHERE
-        rw.theme.id = :themeId
-        AND rw.reservationDate.date = :date
-        AND rw.time.id = :timeId
-        AND rw.waitingTime < :waitingTime
-    """)
+            SELECT
+                COUNT(rw)
+             FROM
+                ReservationWaiting rw
+             WHERE
+                rw.theme.id = :themeId
+                AND rw.reservationDate.date = :date
+                AND rw.time.id = :timeId
+                AND rw.waitingTime < :waitingTime
+            """)
     long countByThemeIdAndDateAndTimeIdAndWaitingTimeLessThan(@Param("themeId") long themeId,
                                                               @Param("date") String date,
                                                               @Param("timeId") long timeId,
                                                               @Param("waitingTime") LocalDateTime waitingTime);
+
+    List<ReservationWaitingResponse> findAllWithPositionByMemberId(Long memberId);
 
     @Query("SELECT rw.id FROM ReservationWaiting rw WHERE rw.id = :id")
     Optional<Long> findIdById(@Param("id") long id);

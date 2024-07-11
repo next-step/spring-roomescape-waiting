@@ -9,11 +9,11 @@ import roomescape.apply.reservation.ui.dto.MyReservationResponse;
 import roomescape.apply.reservation.ui.dto.ReservationAdminResponse;
 import roomescape.apply.reservation.ui.dto.ReservationResponse;
 import roomescape.apply.reservationwaiting.application.ReservationWaitingFinder;
-import roomescape.apply.reservationwaiting.ui.dto.ReservationWaitingResponse;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -64,8 +64,25 @@ public class ReservationFinder {
         List<MyReservationResponse> reservationList = reservationRepository.findAllByMemberId(memberId)
                 .stream()
                 .map(it -> MyReservationResponse.from(it, it.getTheme(), it.getTime()))
-                .toList();
+                .collect(Collectors.toList());
         List<MyReservationResponse> waitingList = reservationWaitingFinder.findReservationWaitingListByMemberId(memberId)
+                .stream()
+                .map(MyReservationResponse::fromWaitingResponse)
+                .toList();
+
+        reservationList.addAll(waitingList);
+        reservationList.sort(Comparator.comparing(MyReservationResponse::date));
+
+        return reservationList;
+    }
+
+    public List<MyReservationResponse> findAllCreatedByLoginMemberV2(LoginMember loginMember) {
+        long memberId = loginMember.id();
+        List<MyReservationResponse> reservationList = reservationRepository.findAllByMemberId(memberId)
+                .stream()
+                .map(it -> MyReservationResponse.from(it, it.getTheme(), it.getTime()))
+                .collect(Collectors.toList());
+        List<MyReservationResponse> waitingList = reservationWaitingFinder.findReservationWaitingListByMemberIdOneQuery(memberId)
                 .stream()
                 .map(MyReservationResponse::fromWaitingResponse)
                 .toList();

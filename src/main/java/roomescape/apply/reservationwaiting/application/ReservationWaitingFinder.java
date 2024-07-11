@@ -3,11 +3,13 @@ package roomescape.apply.reservationwaiting.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.apply.reservationtime.ui.dto.ReservationTimeResponse;
+import roomescape.apply.reservationwaiting.domain.ReservationWaiting;
 import roomescape.apply.reservationwaiting.domain.ReservationWaitingRepository;
 import roomescape.apply.reservationwaiting.ui.dto.ReservationWaitingResponse;
 import roomescape.apply.theme.ui.dto.ThemeResponse;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,6 +34,9 @@ public class ReservationWaitingFinder {
         }).toList();
     }
 
+    public List<ReservationWaitingResponse> findReservationWaitingListByMemberIdOneQuery(Long memberId) {
+        return reservationWaitingRepository.findAllWithPositionByMemberId(memberId);
+    }
 
     public Optional<ReservationWaiting> findOldestReservationWaitingBy(Long themeId,
                                                                        String date,
