@@ -7,13 +7,16 @@ import roomescape.apply.member.domain.Member;
 import roomescape.apply.member.domain.MemberRepository;
 import roomescape.apply.member.infra.InMemoryMemberRepository;
 import roomescape.apply.reservation.infra.InMemoryReservationRepository;
-import roomescape.apply.reservationtime.application.ReservationTimeFinder;
+import roomescape.apply.reservationtime.application.service.ReservationTimeQueryService;
 import roomescape.apply.reservationtime.domain.ReservationTime;
 import roomescape.apply.reservationtime.domain.ReservationTimeRepository;
 import roomescape.apply.reservationtime.infra.InMemoryReservationTimeRepository;
+import roomescape.apply.reservationwaiting.application.handler.ReservationWaitingSaver;
+import roomescape.apply.reservationwaiting.application.service.ReservationWaitingCommandService;
+import roomescape.apply.reservationwaiting.application.service.ReservationWaitingQueryService;
 import roomescape.apply.reservationwaiting.domain.ReservationWaitingRepository;
 import roomescape.apply.reservationwaiting.infra.InMemoryReservationWaitingRepository;
-import roomescape.apply.theme.application.ThemeFinder;
+import roomescape.apply.theme.application.service.ThemeQueryService;
 import roomescape.apply.theme.domain.Theme;
 import roomescape.apply.theme.domain.ThemeRepository;
 import roomescape.apply.theme.infra.InMemoryThemeRepository;
@@ -41,13 +44,10 @@ class ReservationWaitingSaverTest {
         reservationTimeRepository = new InMemoryReservationTimeRepository(new InMemoryReservationRepository());
         reservationWaitingRepository = new InMemoryReservationWaitingRepository();
 
-        var waitingPositionCalculator = new WaitingPositionCalculator(reservationWaitingRepository);
-        var themeFinder = new ThemeFinder(themeRepository);
-        var reservationTimeFinder = new ReservationTimeFinder(reservationTimeRepository);
-        reservationWaitingSaver = new ReservationWaitingSaver(themeFinder,
-                reservationTimeFinder,
-                waitingPositionCalculator,
-                reservationWaitingRepository);
+        reservationWaitingSaver = new ReservationWaitingSaver(new ThemeQueryService(themeRepository),
+                new ReservationTimeQueryService(reservationTimeRepository),
+                new ReservationWaitingQueryService(reservationWaitingRepository),
+                new ReservationWaitingCommandService(reservationWaitingRepository));
     }
 
     @Test
@@ -66,9 +66,7 @@ class ReservationWaitingSaverTest {
         // then
         var waitingList = reservationWaitingRepository.findAllByMemberId(member.getId());
         assertThat(waitingList).hasSize(1);
-        waitingList.forEach(it -> {
-            assertThat(it.getWaitingTime()).isNotNull();
-        });
+        waitingList.forEach(it -> assertThat(it.getWaitingTime()).isNotNull());
     }
 
 }

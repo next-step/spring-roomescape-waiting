@@ -10,6 +10,9 @@ import roomescape.apply.reservation.infra.InMemoryReservationRepository;
 import roomescape.apply.reservationtime.domain.ReservationTime;
 import roomescape.apply.reservationtime.domain.ReservationTimeRepository;
 import roomescape.apply.reservationtime.infra.InMemoryReservationTimeRepository;
+import roomescape.apply.reservationwaiting.application.handler.ReservationWaitingDeleter;
+import roomescape.apply.reservationwaiting.application.service.ReservationWaitingCommandService;
+import roomescape.apply.reservationwaiting.application.service.ReservationWaitingQueryService;
 import roomescape.apply.reservationwaiting.domain.ReservationWaiting;
 import roomescape.apply.reservationwaiting.domain.ReservationWaitingRepository;
 import roomescape.apply.reservationwaiting.infra.InMemoryReservationWaitingRepository;
@@ -40,7 +43,8 @@ class ReservationWaitingDeleterTest {
         reservationTimeRepository = new InMemoryReservationTimeRepository(new InMemoryReservationRepository());
         reservationWaitingRepository = new InMemoryReservationWaitingRepository();
 
-        reservationWaitingDeleter = new ReservationWaitingDeleter(reservationWaitingRepository);
+        reservationWaitingDeleter = new ReservationWaitingDeleter(new ReservationWaitingQueryService(reservationWaitingRepository),
+                new ReservationWaitingCommandService(reservationWaitingRepository));
     }
 
     @Test

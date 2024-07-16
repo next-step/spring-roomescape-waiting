@@ -37,17 +37,19 @@ public class InMemoryReservationWaitingRepository implements ReservationWaitingR
     }
 
     @Override
-    public long countByThemeIdAndDateAndTimeIdAndWaitingTimeLessThan(long themeId,
-                                                                     String date,
-                                                                     long timeId,
-                                                                     LocalDateTime waitingTime
+    public long countOtherWaitingByThemeDateTimeAndWaitingTime(long id,
+                                                               long themeId,
+                                                               String date,
+                                                               long timeId,
+                                                               LocalDateTime waitingTime
     ) {
         return map.values().stream()
-                .filter(it -> it.getTheme().getId() == themeId)
-                .filter(it -> it.getReservationDate().equals(date))
-                .filter(it -> it.getTime().getId() == timeId)
-                .filter(it -> it.getWaitingTime().isBefore(waitingTime))
-                .count();
+                  .filter(it -> it.getId() != id)
+                  .filter(it -> it.getTheme().getId() == themeId)
+                  .filter(it -> it.getReservationDate().equals(date))
+                  .filter(it -> it.getTime().getId() == timeId)
+                  .filter(it -> it.getWaitingTime().isBefore(waitingTime))
+                  .count();
     }
 
     @Override

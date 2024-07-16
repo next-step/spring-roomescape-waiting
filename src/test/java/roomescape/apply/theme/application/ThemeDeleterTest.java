@@ -6,18 +6,17 @@ import org.junit.jupiter.api.Test;
 import roomescape.apply.member.domain.Member;
 import roomescape.apply.member.domain.MemberRepository;
 import roomescape.apply.member.infra.InMemoryMemberRepository;
-import roomescape.apply.reservation.application.ReservationFinder;
+import roomescape.apply.reservation.application.service.ReservationQueryService;
 import roomescape.apply.reservation.domain.Reservation;
 import roomescape.apply.reservation.domain.ReservationRepository;
 import roomescape.apply.reservation.infra.InMemoryReservationRepository;
 import roomescape.apply.reservationtime.domain.ReservationTime;
 import roomescape.apply.reservationtime.domain.ReservationTimeRepository;
 import roomescape.apply.reservationtime.infra.InMemoryReservationTimeRepository;
-import roomescape.apply.reservationwaiting.application.ReservationWaitingFinder;
-import roomescape.apply.reservationwaiting.application.WaitingPositionCalculator;
-import roomescape.apply.reservationwaiting.domain.ReservationWaitingRepository;
-import roomescape.apply.reservationwaiting.infra.InMemoryReservationWaitingRepository;
 import roomescape.apply.theme.application.exception.ThemeReferencedException;
+import roomescape.apply.theme.application.handler.ThemeDeleter;
+import roomescape.apply.theme.application.service.ThemeCommandService;
+import roomescape.apply.theme.application.service.ThemeQueryService;
 import roomescape.apply.theme.domain.Theme;
 import roomescape.apply.theme.domain.ThemeRepository;
 import roomescape.apply.theme.infra.InMemoryThemeRepository;
@@ -34,7 +33,6 @@ class ThemeDeleterTest {
     private MemberRepository memberRepository;
     private ReservationRepository reservationRepository;
     private ReservationTimeRepository reservationTimeRepository;
-    private ReservationWaitingRepository reservationWaitingRepository;
 
     @BeforeEach
     void setUp() {
@@ -42,13 +40,10 @@ class ThemeDeleterTest {
         reservationRepository = new InMemoryReservationRepository();
         reservationTimeRepository = new InMemoryReservationTimeRepository(reservationRepository);
         memberRepository = new InMemoryMemberRepository();
-        reservationWaitingRepository = new InMemoryReservationWaitingRepository();
 
-        var waitingPositionCalculator = new WaitingPositionCalculator(reservationWaitingRepository);
-        var reservationWaitingFinder = new ReservationWaitingFinder(waitingPositionCalculator,
-                                                                    reservationWaitingRepository);
-        var reservationFinder = new ReservationFinder(reservationRepository, reservationWaitingFinder);
-        themeDeleter = new ThemeDeleter(themeRepository, reservationFinder);
+        themeDeleter = new ThemeDeleter(new ThemeQueryService(themeRepository),
+                new ThemeCommandService(themeRepository),
+                new ReservationQueryService(reservationRepository));
     }
 
     @Test
