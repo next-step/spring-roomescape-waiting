@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import roomescape.apply.auth.application.annotation.NeedMemberRole;
 import roomescape.apply.auth.ui.dto.LoginMember;
 import roomescape.apply.member.domain.MemberRoleName;
-import roomescape.apply.reservationwaiting.application.ReservationWaitingDeleter;
-import roomescape.apply.reservationwaiting.application.ReservationWaitingSaver;
+import roomescape.apply.reservationwaiting.application.handler.ReservationWaitingDeleter;
+import roomescape.apply.reservationwaiting.application.handler.ReservationWaitingSaver;
 import roomescape.apply.reservationwaiting.ui.dto.ReservationWaitingRequest;
 import roomescape.apply.reservationwaiting.ui.dto.ReservationWaitingResponse;
 

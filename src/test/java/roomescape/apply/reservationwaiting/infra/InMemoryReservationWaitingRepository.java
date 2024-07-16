@@ -7,7 +7,10 @@ import roomescape.apply.reservationwaiting.ui.dto.ReservationWaitingResponse;
 import roomescape.apply.theme.ui.dto.ThemeResponse;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class InMemoryReservationWaitingRepository implements ReservationWaitingRepository {
@@ -98,8 +101,8 @@ public class InMemoryReservationWaitingRepository implements ReservationWaitingR
         int position = 0;
         for (ReservationWaiting each : map.values()) {
             boolean isRoomEscape = selected.getTheme().getId().equals(each.getTheme().getId())
-                                   && selected.getReservationDate().equals(each.getReservationDate())
-                                   && selected.getTime().getId().equals(each.getTime().getId());
+                    && selected.getReservationDate().equals(each.getReservationDate())
+                    && selected.getTime().getId().equals(each.getTime().getId());
             if (isRoomEscape && each.getWaitingTime().isBefore(selected.getWaitingTime())) {
                 position++;
             }
