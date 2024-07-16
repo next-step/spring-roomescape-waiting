@@ -21,15 +21,17 @@ public interface ReservationWaitingRepository {
              FROM
                 ReservationWaiting rw
              WHERE
-                rw.theme.id = :themeId
+                rw.id != :id
+                AND rw.theme.id = :themeId
                 AND rw.reservationDate.date = :date
                 AND rw.time.id = :timeId
                 AND rw.waitingTime < :waitingTime
             """)
-    long countByThemeIdAndDateAndTimeIdAndWaitingTimeLessThan(@Param("themeId") long themeId,
-                                                              @Param("date") String date,
-                                                              @Param("timeId") long timeId,
-                                                              @Param("waitingTime") LocalDateTime waitingTime);
+    long countOtherWaitingByThemeDateTimeAndWaitingTime(@Param("id") long id,
+                                                        @Param("themeId") long themeId,
+                                                        @Param("date") String date,
+                                                        @Param("timeId") long timeId,
+                                                        @Param("waitingTime") LocalDateTime waitingTime);
 
     List<ReservationWaitingResponse> findAllWithPositionByMemberId(Long memberId);
 

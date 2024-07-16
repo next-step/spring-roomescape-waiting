@@ -42,7 +42,7 @@ public class ReservationAdminController {
 
     @PostMapping
     @NeedMemberRole({MemberRoleName.ADMIN})
-    public ResponseEntity<ReservationAdminResponse> adminAddReservation(@RequestBody ReservationAdminRequest request
+    public ResponseEntity<CreateReservationResponse> adminAddReservation(@RequestBody ReservationAdminRequest request
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(reservationRecorder.recordReservationBy(request));

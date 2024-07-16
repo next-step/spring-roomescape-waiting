@@ -6,9 +6,10 @@ import org.springframework.web.bind.annotation.*;
 import roomescape.apply.auth.application.annotation.NeedMemberRole;
 import roomescape.apply.auth.ui.dto.LoginMember;
 import roomescape.apply.member.domain.MemberRoleName;
-import roomescape.apply.reservation.application.ReservationCanceler;
-import roomescape.apply.reservation.application.ReservationFinder;
-import roomescape.apply.reservation.application.ReservationRecorder;
+import roomescape.apply.reservation.application.handler.ReservationCanceler;
+import roomescape.apply.reservation.application.handler.ReservationFinder;
+import roomescape.apply.reservation.application.handler.ReservationRecorder;
+import roomescape.apply.reservation.ui.dto.CreateReservationResponse;
 import roomescape.apply.reservation.ui.dto.MyReservationResponse;
 import roomescape.apply.reservation.ui.dto.ReservationRequest;
 import roomescape.apply.reservation.ui.dto.ReservationResponse;
@@ -37,8 +38,8 @@ public class ReservationController {
 
     @PostMapping
     @NeedMemberRole({MemberRoleName.ADMIN, MemberRoleName.GUEST})
-    public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request,
-                                                              LoginMember loginMember
+    public ResponseEntity<CreateReservationResponse> addReservation(@RequestBody ReservationRequest request,
+                                                                    LoginMember loginMember
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(reservationRecorder.recordReservationBy(request, loginMember));
@@ -57,8 +58,4 @@ public class ReservationController {
         return ResponseEntity.ok(reservationFinder.findAllCreatedByLoginMember(loginMember));
     }
 
-    @GetMapping("/mine/v2")
-    public ResponseEntity<List<MyReservationResponse>> getMemberReservationsV2(LoginMember loginMember) {
-        return ResponseEntity.ok(reservationFinder.findAllCreatedByLoginMemberV2(loginMember));
-    }
 }
