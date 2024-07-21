@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS reservation;
+DROP TABLE IF EXISTS reservation_waiting;
 DROP TABLE IF EXISTS reservation_time;
 DROP TABLE IF EXISTS theme;
 DROP TABLE IF EXISTS users;
@@ -41,3 +42,16 @@ CREATE TABLE reservation
     FOREIGN KEY (time_id) REFERENCES reservation_time (id),
     FOREIGN KEY (theme_id) REFERENCES theme (id)            -- 외래키 추가
 );
+
+CREATE TABLE reservation_waiting
+(
+    id   BIGINT       NOT NULL AUTO_INCREMENT,
+    date VARCHAR(255) NOT NULL,
+    user_id BIGINT,
+    time_id BIGINT,
+    theme_id BIGINT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (time_id) REFERENCES reservation_time (id),
+    FOREIGN KEY (theme_id) REFERENCES theme (id)
+)
