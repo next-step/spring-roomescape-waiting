@@ -31,50 +31,52 @@ public class RoomescapeExceptionHandler {
     }
 
     @ExceptionHandler(AlreadyExistsException.class)
-    public ResponseEntity<RoomescapeExceptionResponse> handleAlreadyExistsException(AlreadyExistsException e) {
-        return new ResponseEntity<>(RoomescapeExceptionResponse.of(e.getMessage()), HttpStatus.CONFLICT);
+    public ResponseEntity<RoomescapeExceptionResponse> handleAlreadyExistsException(
+        AlreadyExistsException e) {
+        return new ResponseEntity<>(RoomescapeExceptionResponse.of(e.getMessage()),
+            HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(DateTimeParseException.class)
     public ResponseEntity<RoomescapeExceptionResponse> hanleParseException() {
         return new ResponseEntity<>(RoomescapeExceptionResponse.of(
-                                        RoomescapeErrorMessage.ILLEGAL_DATETIME_FORMAT_EXCEPTION),
-                                    HttpStatus.BAD_REQUEST);
+            RoomescapeErrorMessage.ILLEGAL_DATETIME_FORMAT_EXCEPTION),
+            HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(PastDateTimeException.class)
     public ResponseEntity<RoomescapeExceptionResponse> handlePastDateTimeException(
         PastDateTimeException e) {
         return new ResponseEntity<>(RoomescapeExceptionResponse.of(e.getMessage()),
-                                    HttpStatus.BAD_REQUEST);
+            HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ReferenceException.class)
     public ResponseEntity<RoomescapeExceptionResponse> handleReservationAlreayExistsException(
         ReferenceException e) {
         return new ResponseEntity<>(RoomescapeExceptionResponse.of(e.getMessage()),
-                                    HttpStatus.CONFLICT);
+            HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(NotExistsException.class)
     public ResponseEntity<RoomescapeExceptionResponse> handleNotExistsException(
         NotExistsException e) {
         return new ResponseEntity<>(RoomescapeExceptionResponse.of(e.getMessage()),
-                                    HttpStatus.NOT_FOUND);
+            HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(PasswordNotMatchedException.class)
     public ResponseEntity<RoomescapeExceptionResponse> handlePasswordNotMatchedException(
         PasswordNotMatchedException e) {
         return new ResponseEntity<>(RoomescapeExceptionResponse.of(e.getMessage()),
-                                    HttpStatus.UNAUTHORIZED);
+            HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<RoomescapeExceptionResponse> handleAuthenticationException(
         AuthenticationException e) {
         return new ResponseEntity<>(RoomescapeExceptionResponse.of(e.getMessage()),
-                                    HttpStatus.UNAUTHORIZED);
+            HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(IllegalMemberRoleException.class)

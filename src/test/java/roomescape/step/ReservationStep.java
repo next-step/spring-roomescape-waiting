@@ -13,7 +13,7 @@ public class ReservationStep {
     public static ExtractableResponse<Response> 예약_등록(ReservationRequest request) {
         return RestAssured.given().log().all()
             .contentType(ContentType.JSON)
-            .cookie("token", 회원_토큰_생성())
+            .cookie(회원_토큰_생성())
             .body(request)
             .when().post("/reservations")
             .then().log().all()

@@ -38,6 +38,13 @@ public class ReservationController {
             .body(reservationService.saveReservation(loginMember.getId(), request));
     }
 
+    @PostMapping("/waiting")
+    public ResponseEntity<ReservationResponse> saveWaitingReservation(LoginMember loginMember,
+        @RequestBody @Valid ReservationRequest request) {
+        return ResponseEntity.ok()
+            .body(reservationService.saveWaitingReservation(loginMember.getId(), request));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable String id) {
         reservationService.deleteReservation(Long.parseLong(id));

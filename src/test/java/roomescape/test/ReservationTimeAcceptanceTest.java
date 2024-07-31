@@ -1,6 +1,7 @@
 package roomescape.test;
 
 import io.restassured.RestAssured;
+import io.restassured.http.Cookie;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -100,9 +101,9 @@ public class ReservationTimeAcceptanceTest {
             .statusCode(200);
     }
 
-    private ExtractableResponse<Response> 예약_시간_삭제(String token, Long id) {
+    private ExtractableResponse<Response> 예약_시간_삭제(Cookie token, Long id) {
         return RestAssured.given().log().all()
-            .cookie("token", token)
+            .cookie(token)
             .when().delete("/times/" + id)
             .then().log().all()
             .extract();

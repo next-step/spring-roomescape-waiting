@@ -8,13 +8,14 @@ public class ReservationTimeResponse {
 
     private String startAt;
 
-    public ReservationTimeResponse(Long id, String startAt) {
+    private ReservationTimeResponse(Long id, String startAt) {
         this.id = id;
         this.startAt = startAt;
     }
 
-    public ReservationTimeResponse(ReservationTime reservationTime) {
-        this(reservationTime.getId(), reservationTime.getStartAt().toString());
+    public static ReservationTimeResponse of(ReservationTime reservationTime) {
+        return new ReservationTimeResponse(reservationTime.getId(),
+            reservationTime.getStartAt().toString());
     }
 
     public Long getId() {

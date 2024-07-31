@@ -7,6 +7,7 @@ import roomescape.theme.Theme;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 public class Reservation {
@@ -51,6 +52,14 @@ public class Reservation {
         return LocalDateTime.of(date, reservationTime.getStartAt()).isBefore(dateTime);
     }
 
+    public boolean hasSameMember(Member member) {
+        return this.member.getId() == member.getId();
+    }
+
+    public boolean isWaiting() {
+        return ReservationStatus.WAITING.equals(reservationStatus);
+    }
+
     public Long getId() {
         return id;
     }
@@ -73,5 +82,18 @@ public class Reservation {
 
     public ReservationStatus getReservationStatus() {
         return reservationStatus;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Reservation that = (Reservation) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

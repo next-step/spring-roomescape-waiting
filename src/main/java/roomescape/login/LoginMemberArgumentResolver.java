@@ -1,6 +1,6 @@
 package roomescape.login;
 
-import static roomescape.util.CookieUtils.getCookie;
+import static roomescape.util.LoginUtils.getToken;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
@@ -31,9 +31,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
             throw new AuthenticationException();
         }
 
-        String token = getCookie(servletRequest, "token")
-            .orElseThrow(AuthenticationException::new)
-            .getValue();
+        String token = getToken(servletRequest);
 
         return jwtTokenProvider.getLoginMember(token);
     }

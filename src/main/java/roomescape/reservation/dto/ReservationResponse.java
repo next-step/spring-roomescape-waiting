@@ -14,7 +14,7 @@ public class ReservationResponse {
 
     private String themeName;
 
-    public ReservationResponse(Long id, String name, String date, String time, String themeName) {
+    private ReservationResponse(Long id, String name, String date, String time, String themeName) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -22,8 +22,8 @@ public class ReservationResponse {
         this.themeName = themeName;
     }
 
-    public ReservationResponse(Reservation reservation) {
-        this(reservation.getId(),
+    public static ReservationResponse of(Reservation reservation) {
+        return new ReservationResponse(reservation.getId(),
             reservation.getMember().getName(),
             reservation.getDate().toString(),
             reservation.getReservationTime().getStartAt().toString(),

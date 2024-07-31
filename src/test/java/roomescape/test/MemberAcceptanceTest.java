@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import roomescape.error.RoomescapeErrorMessage;
-import roomescape.member.dto.MemberRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static roomescape.member.initializer.MemberInitializer.DUMMY_USER_EMAIL;
+import static roomescape.member.initializer.MemberInitializer.FIRST_USER_EMAIL;
+import static roomescape.step.MemberStep.회원_등록;
 
 @DisplayName("회원 관련 api 호출 테스트")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -34,7 +34,7 @@ public class MemberAcceptanceTest {
 
     @Test
     void 존재하는_회원의_이메일로_회원_등록_실패() {
-        ExtractableResponse<Response> response = 회원_등록(DUMMY_USER_EMAIL, password, name);
+        ExtractableResponse<Response> response = 회원_등록(FIRST_USER_EMAIL, password, name);
 
         assertThat(response.statusCode()).isEqualTo(409);
         assertThat(response.jsonPath().get("message").toString())
@@ -48,14 +48,5 @@ public class MemberAcceptanceTest {
                 .when().get("/members")
                 .then().log().all()
                 .statusCode(200);
-    }
-
-    private ExtractableResponse<Response> 회원_등록(String email, String password, String name) {
-        return RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(new MemberRequest(email, password, name))
-            .when().post("/members")
-            .then().log().all()
-            .extract();
     }
 }

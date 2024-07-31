@@ -1,8 +1,8 @@
 package roomescape.member.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.error.exception.MemberAlreadyExistsException;
 import roomescape.error.exception.MemberNotExistsException;
 import roomescape.error.exception.PasswordNotMatchedException;
@@ -15,6 +15,7 @@ import roomescape.member.dto.MemberResponse;
 import roomescape.member.repository.MemberRepository;
 
 @Service
+@Transactional(readOnly = true)
 public class MemberService implements LoginMemberService {
 
     private final MemberRepository memberRepository;
@@ -26,7 +27,7 @@ public class MemberService implements LoginMemberService {
     public List<MemberResponse> findMembers() {
         return memberRepository.findAll().stream()
             .map(MemberResponse::new)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override
@@ -41,13 +42,15 @@ public class MemberService implements LoginMemberService {
         return new LoginMember(member.getId(), member.getName(), member.getRole());
     }
 
+    @Transactional
     public MemberResponse save(MemberRequest memberRequest) {
-        if(memberRepository.findByEmail(memberRequest.getEmail()).isPresent()) {
+        if (memberRepository.findByEmail(memberRequest.getEmail()).isPresent()) {
             throw new MemberAlreadyExistsException();
         }
 
-        Member member = memberRepository.save(new Member(memberRequest.getEmail(), memberRequest.getPassword(),
-            memberRequest.getName(), MemberRole.MEMBER));
+        Member member = memberRepository.save(
+            new Member(memberRequest.getEmail(), memberRequest.getPassword(),
+                memberRequest.getName(), MemberRole.MEMBER));
 
         return new MemberResponse(member);
     }
