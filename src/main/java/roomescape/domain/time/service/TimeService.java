@@ -8,6 +8,7 @@ import roomescape.domain.time.error.exception.TimeErrorCode;
 import roomescape.domain.time.error.exception.TimeException;
 import roomescape.domain.time.service.dto.TimeRequest;
 import roomescape.domain.time.service.dto.TimeResponse;
+import roomescape.domain.time.service.dto.TimeWithStatus;
 
 import java.util.List;
 
@@ -49,9 +50,21 @@ public class TimeService {
     }
 
     @Transactional(readOnly = true)
-    public List<TimeResponse> findByThemeIdAndDate(String themeId, String date) {
-        List<Time> times = timeRepository.findByThemeIdAndDate(themeId, date);
-        return times.stream().map(this::mapToTimeResponseDto).toList();
+    public List<TimeWithStatus> findByThemeIdAndDateWithSingleQuery(String themeId, String date) {
+        timeRepository.findByThemeIdAndDateWithSingleQuery(themeId, date);
+        return timeRepository.findByThemeIdAndDateWithSingleQuery(themeId, date);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TimeWithStatus> findByThemeIdAndDateWithMultipleQuery(String themeId, String date) {
+        List<Time> times = timeRepository.findAll();
+        List<Long> reservedTimeId = timeRepository.findByThemeIdAndDateWithMultipleQuery(themeId, date);
+        return times.stream()
+                .map(time -> new TimeWithStatus(
+                        time.getId(),
+                        time.getStartAt(),
+                        !reservedTimeId.contains(time.getId()) ? "true" : "false"
+                )).toList();
     }
 
     private void validationCheck(String startAt) {
@@ -61,7 +74,6 @@ public class TimeService {
     private TimeResponse mapToTimeResponseDto(Time time) {
         return new TimeResponse(
                 time.getId(),
-                time.getStartAt()
-        );
+                time.getStartAt());
     }
 }

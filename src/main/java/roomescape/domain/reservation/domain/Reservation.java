@@ -5,6 +5,8 @@ import roomescape.domain.member.domain.Member;
 import roomescape.domain.theme.domain.Theme;
 import roomescape.domain.time.domain.Time;
 
+import java.util.Objects;
+
 @Entity
 public class Reservation {
 
@@ -15,14 +17,13 @@ public class Reservation {
     private String date;
     private String status;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne
     @JoinColumn(name = "theme_id")
     private Theme theme;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne
     @JoinColumn(name = "time_id")
     private Time time;
-
 
     @ManyToOne
     @JoinColumn(name = "member_id")
@@ -69,7 +70,20 @@ public class Reservation {
         return member;
     }
 
-    public void connectWith(Member member) {
+    public void addMember(Member member) {
         this.member = member;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Reservation that = (Reservation) o;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }
